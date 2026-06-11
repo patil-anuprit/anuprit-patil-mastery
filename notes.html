@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notes Hub — Board Mastery by Anuprit Patil</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .notes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .highlight-box {
+      background: rgba(79,70,229,0.06); border: 1px solid rgba(79,70,229,0.15);
+      border-radius: var(--radius); padding: 12px 16px; margin: 8px 0;
+      font-size: 14px; color: var(--text);
+    }
+    .highlight-box .formula { color: var(--primary); font-family: 'Courier New', monospace; font-weight: 700; }
+    .def-term { font-weight: 700; color: var(--text); }
+    .def-body { color: var(--text-secondary); }
+    .chapter-badge { padding: 3px 10px; background: rgba(79,70,229,0.1); color: var(--primary); border-radius: 999px; font-size: 11px; font-weight: 700; }
+    .no-results { text-align: center; padding: 60px 20px; }
+    @media (max-width: 768px) { .notes-layout { grid-template-columns: 1fr !important; } }
+  </style>
+</head>
+<body>
+  <div id="page-loader"><div class="loader-logo">AP</div><div style="color:rgba(255,255,255,0.6);font-size:14px;">Loading Notes...</div><div class="loader-bar"><div class="loader-bar-fill"></div></div></div>
+  <div class="toast-container"></div>
+
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-brand">
+        <div class="nav-logo">AP</div>
+        <div><div class="nav-brand-text">Board Mastery</div><div class="nav-brand-sub">by Anuprit Patil</div></div>
+      </a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="planner.html" class="nav-link">Planner</a>
+        <a href="notes.html" class="nav-link">Notes Hub</a>
+        <a href="quiz.html" class="nav-link">Quiz Zone</a>
+        <a href="about.html" class="nav-link">About</a>
+      </div>
+      <div class="nav-actions">
+        <button class="theme-toggle">🌙</button>
+        <a href="planner.html" class="nav-link nav-cta">Start Studying →</a>
+      </div>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="index.html" class="nav-link">🏠 Home</a>
+    <a href="planner.html" class="nav-link">📅 Study Planner</a>
+    <a href="notes.html" class="nav-link">📚 Notes Hub</a>
+    <a href="quiz.html" class="nav-link">🎯 Quiz Zone</a>
+    <a href="about.html" class="nav-link">👤 About Anuprit</a>
+    <button class="theme-toggle" style="width:100%;border-radius:8px;height:44px;margin-top:8px;">Toggle Theme</button>
+  </div>
+
+  <main>
+    <div class="page-header">
+      <div class="container">
+        <div class="page-header-badge">📚 Notes Hub</div>
+        <h1 class="page-header-title">Complete Revision Notes</h1>
+        <p class="page-header-subtitle">Formulas, definitions, and key concepts for all 5 CBSE Class 10 subjects — organized, searchable, and exam-ready.</p>
+      </div>
+    </div>
+
+    <section class="section-sm">
+      <div class="container">
+        <!-- Search -->
+        <div class="notes-search" style="margin-bottom:24px;">
+          <input type="text" id="notes-search-input" placeholder="🔍 Search notes, formulas, definitions..." oninput="searchNotes(this.value)">
+          <button onclick="clearSearch()" class="btn btn-secondary btn-sm">Clear</button>
+        </div>
+
+        <div class="notes-layout" style="display:grid;grid-template-columns:220px 1fr;gap:24px;">
+          <!-- Sidebar -->
+          <div>
+            <div style="margin-bottom:8px;font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;padding:0 4px;">Subjects</div>
+            <button class="subject-btn active" onclick="selectSubject('maths',this)" id="btn-maths">📐 Mathematics</button>
+            <button class="subject-btn" onclick="selectSubject('science',this)" id="btn-science">🔬 Science</button>
+            <button class="subject-btn" onclick="selectSubject('english',this)" id="btn-english">📝 English</button>
+            <button class="subject-btn" onclick="selectSubject('sst',this)" id="btn-sst">🌍 Social Science</button>
+            <button class="subject-btn" onclick="selectSubject('it',this)" id="btn-it">💻 Info. Technology</button>
+
+            <div style="margin-top:24px;padding:16px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);">
+              <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px;">💡 Study Tip</div>
+              <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;" id="study-tip">Loading tip...</div>
+            </div>
+
+            <a href="quiz.html" style="display:block;margin-top:16px;padding:14px;background:var(--grad-primary);border-radius:var(--radius);text-align:center;color:#fff;font-size:14px;font-weight:600;transition:var(--transition);" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+              🎯 Test Yourself →
+            </a>
+          </div>
+
+          <!-- Content -->
+          <div id="notes-content">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-bottom" style="max-width:1200px;margin:0 auto;border-top:none;padding:24px 0 0;">
+      <div>Built with dedication by <a href="about.html">Anuprit Patil</a> · Board Mastery</div>
+      <div><a href="index.html">Home</a> · <a href="planner.html">Planner</a> · <a href="quiz.html">Quiz</a></div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    // ===== NOTES DATA =====
+    const NOTES_DATA = {
+      maths: {
+        name: 'Mathematics',
+        icon: '📐',
+        color: '#4f46e5',
+        sections: [
+          {
+            title: '📏 Real Numbers',
+            notes: [
+              { title: 'Euclid\'s Division Lemma', type: 'formula', content: 'For any two positive integers a and b, there exist unique integers q and r such that: a = bq + r, where 0 ≤ r < b', tag: 'Ch 1' },
+              { title: 'Fundamental Theorem of Arithmetic', type: 'definition', content: 'Every composite number can be expressed (factorised) as a product of primes, and this factorisation is unique, apart from the order in which the prime factors occur.', tag: 'Ch 1' },
+              { title: 'HCF using Prime Factorisation', type: 'formula', content: 'HCF(a, b) = Product of the smallest power of each common prime factor.', tag: 'Ch 1' },
+              { title: 'LCM using Prime Factorisation', type: 'formula', content: 'LCM(a, b) = Product of the greatest power of each prime factor involved.', tag: 'Ch 1' },
+              { title: 'HCF × LCM Relation', type: 'formula', content: 'HCF(a, b) × LCM(a, b) = a × b', tag: 'Ch 1' },
+              { title: 'Irrational Numbers', type: 'definition', content: 'Numbers that cannot be expressed as p/q form (where p, q are integers and q≠0). Examples: √2, √3, π, e. Proof: Assume √2 = p/q (coprime), then 2 = p²/q² → p² = 2q² → p is even → p=2k → 4k² = 2q² → q² = 2k² → q is even. Contradiction!', tag: 'Ch 1' },
+            ]
+          },
+          {
+            title: '🔢 Polynomials',
+            notes: [
+              { title: 'Relationship between Zeros and Coefficients — Quadratic', type: 'formula', content: 'For p(x) = ax² + bx + c with zeros α and β:\n• Sum of zeros: α + β = −b/a\n• Product of zeros: αβ = c/a', tag: 'Ch 2' },
+              { title: 'Relationship — Cubic Polynomial', type: 'formula', content: 'For p(x) = ax³ + bx² + cx + d with zeros α, β, γ:\n• α+β+γ = −b/a\n• αβ+βγ+γα = c/a\n• αβγ = −d/a', tag: 'Ch 2' },
+              { title: 'Degree of a Polynomial', type: 'definition', content: 'The degree is the highest power of the variable. A polynomial of degree 1 is linear, degree 2 is quadratic, degree 3 is cubic. A quadratic polynomial can have at most 2 zeros.', tag: 'Ch 2' },
+              { title: 'Division Algorithm for Polynomials', type: 'formula', content: 'p(x) = g(x) × q(x) + r(x)\nwhere degree(r(x)) < degree(g(x)) or r(x) = 0', tag: 'Ch 2' },
+            ]
+          },
+          {
+            title: '📊 Pair of Linear Equations',
+            notes: [
+              { title: 'Graphical Method Results', type: 'definition', content: '• Intersecting lines → Unique solution (consistent)\n• Coincident lines → Infinite solutions (consistent, dependent)\n• Parallel lines → No solution (inconsistent)', tag: 'Ch 3' },
+              { title: 'Consistency Conditions', type: 'formula', content: 'a₁/a₂ ≠ b₁/b₂ → Unique solution\na₁/a₂ = b₁/b₂ = c₁/c₂ → Infinite solutions\na₁/a₂ = b₁/b₂ ≠ c₁/c₂ → No solution', tag: 'Ch 3' },
+              { title: 'Substitution Method', type: 'definition', content: 'Express one variable in terms of the other from one equation, then substitute in the second equation to find both variables.', tag: 'Ch 3' },
+              { title: 'Cross-Multiplication Method', type: 'formula', content: 'x/(b₁c₂−b₂c₁) = y/(c₁a₂−c₂a₁) = 1/(a₁b₂−a₂b₁)', tag: 'Ch 3' },
+            ]
+          },
+          {
+            title: '📐 Quadratic Equations',
+            notes: [
+              { title: 'Quadratic Formula', type: 'formula', content: 'x = [−b ± √(b²−4ac)] / 2a\nfor ax² + bx + c = 0', tag: 'Ch 4' },
+              { title: 'Discriminant (D)', type: 'formula', content: 'D = b² − 4ac\n• D > 0 → Two distinct real roots\n• D = 0 → Two equal real roots (x = −b/2a)\n• D < 0 → No real roots', tag: 'Ch 4' },
+              { title: 'Factorisation Method', type: 'definition', content: 'Split the middle term: find two numbers whose product = ac and sum = b. Then factor by grouping.', tag: 'Ch 4' },
+            ]
+          },
+          {
+            title: '🔄 Arithmetic Progressions',
+            notes: [
+              { title: 'General Term (nth Term)', type: 'formula', content: 'aₙ = a + (n−1)d\nwhere a = first term, d = common difference', tag: 'Ch 5' },
+              { title: 'Sum of First n Terms', type: 'formula', content: 'Sₙ = n/2 × [2a + (n−1)d]\nOR Sₙ = n/2 × (a + l) where l = last term', tag: 'Ch 5' },
+              { title: 'Common Difference', type: 'formula', content: 'd = a₂ − a₁ = a₃ − a₂ = ... (constant throughout)', tag: 'Ch 5' },
+            ]
+          },
+          {
+            title: '📐 Triangles',
+            notes: [
+              { title: 'Basic Proportionality Theorem (Thales)', type: 'formula', content: 'If a line is drawn parallel to one side of a triangle, it divides the other two sides proportionally.\nDE ∥ BC → AD/DB = AE/EC', tag: 'Ch 6' },
+              { title: 'AA Similarity Criterion', type: 'definition', content: 'If two angles of one triangle are equal to two angles of another triangle, then the triangles are similar (AA ~ AA).', tag: 'Ch 6' },
+              { title: 'Ratio of Areas of Similar Triangles', type: 'formula', content: 'ar(△ABC)/ar(△PQR) = (AB/PQ)² = (BC/QR)² = (AC/PR)²', tag: 'Ch 6' },
+              { title: 'Pythagoras Theorem', type: 'formula', content: 'In a right-angled triangle, (hypotenuse)² = (base)² + (perpendicular)²\nAC² = AB² + BC² (where AC is hypotenuse)', tag: 'Ch 6' },
+            ]
+          },
+          {
+            title: '📏 Coordinate Geometry',
+            notes: [
+              { title: 'Distance Formula', type: 'formula', content: 'd = √[(x₂−x₁)² + (y₂−y₁)²]', tag: 'Ch 7' },
+              { title: 'Section Formula (Internal Division)', type: 'formula', content: 'P(x, y) = [(mx₂+nx₁)/(m+n), (my₂+ny₁)/(m+n)]', tag: 'Ch 7' },
+              { title: 'Midpoint Formula', type: 'formula', content: 'M = [(x₁+x₂)/2, (y₁+y₂)/2]', tag: 'Ch 7' },
+              { title: 'Area of Triangle', type: 'formula', content: 'Area = ½|x₁(y₂−y₃) + x₂(y₃−y₁) + x₃(y₁−y₂)|', tag: 'Ch 7' },
+            ]
+          },
+          {
+            title: '📊 Trigonometry',
+            notes: [
+              { title: 'Trigonometric Ratios', type: 'formula', content: 'sin θ = Opposite/Hypotenuse\ncos θ = Adjacent/Hypotenuse\ntan θ = Opposite/Adjacent\ncosec θ = 1/sin θ, sec θ = 1/cos θ, cot θ = 1/tan θ', tag: 'Ch 8' },
+              { title: 'Pythagorean Identities', type: 'formula', content: 'sin²θ + cos²θ = 1\n1 + tan²θ = sec²θ\n1 + cot²θ = cosec²θ', tag: 'Ch 8' },
+              { title: 'Standard Values Table', type: 'formula', content: 'Angle:  0°   30°    45°    60°   90°\nsin:    0    1/2    1/√2   √3/2   1\ncos:    1    √3/2   1/√2   1/2    0\ntan:    0    1/√3   1      √3     ∞', tag: 'Ch 8' },
+            ]
+          },
+          {
+            title: '⭕ Circles',
+            notes: [
+              { title: 'Tangent to a Circle', type: 'definition', content: 'A tangent to a circle is a line that touches the circle at exactly one point (point of tangency). The tangent at any point is perpendicular to the radius at that point.', tag: 'Ch 10' },
+              { title: 'Length of Tangent', type: 'formula', content: 'Length of tangent from external point P = √(d² − r²)\nwhere d = distance from P to centre, r = radius', tag: 'Ch 10' },
+              { title: 'Two Tangents from External Point', type: 'definition', content: 'The lengths of two tangents drawn from an external point to a circle are equal.', tag: 'Ch 10' },
+            ]
+          },
+          {
+            title: '📦 Surface Areas & Volumes',
+            notes: [
+              { title: 'Cylinder', type: 'formula', content: 'CSA = 2πrh | TSA = 2πr(r+h) | Volume = πr²h', tag: 'Ch 12' },
+              { title: 'Cone', type: 'formula', content: 'l = √(r²+h²) | CSA = πrl | TSA = πr(r+l) | Volume = (1/3)πr²h', tag: 'Ch 12' },
+              { title: 'Sphere', type: 'formula', content: 'SA = 4πr² | Volume = (4/3)πr³', tag: 'Ch 12' },
+              { title: 'Hemisphere', type: 'formula', content: 'CSA = 2πr² | TSA = 3πr² | Volume = (2/3)πr³', tag: 'Ch 12' },
+              { title: 'Frustum of Cone', type: 'formula', content: 'l = √[h²+(R−r)²] | CSA = π(R+r)l | TSA = π(R+r)l + π(R²+r²) | Volume = (πh/3)(R²+Rr+r²)', tag: 'Ch 12' },
+            ]
+          },
+          {
+            title: '📈 Statistics',
+            notes: [
+              { title: 'Mean (Direct Method)', type: 'formula', content: 'Mean (x̄) = Σfxᵢ / Σf', tag: 'Ch 14' },
+              { title: 'Median', type: 'formula', content: 'Median = l + [(n/2 − cf)/f] × h\nwhere l=lower boundary of median class, cf=cumulative freq before, f=freq of median class, h=class width', tag: 'Ch 14' },
+              { title: 'Mode', type: 'formula', content: 'Mode = l + [(f₁−f₀)/(2f₁−f₀−f₂)] × h\nwhere l=lower boundary of modal class, f₁=highest freq, f₀=freq before, f₂=freq after, h=class size', tag: 'Ch 14' },
+              { title: 'Empirical Relation', type: 'formula', content: 'Mode = 3 Median − 2 Mean', tag: 'Ch 14' },
+            ]
+          },
+          {
+            title: '🎲 Probability',
+            notes: [
+              { title: 'Probability Formula', type: 'formula', content: 'P(E) = Number of favourable outcomes / Total number of outcomes', tag: 'Ch 15' },
+              { title: 'Complementary Events', type: 'formula', content: 'P(E) + P(Ē) = 1\n∴ P(not E) = 1 − P(E)', tag: 'Ch 15' },
+              { title: 'Range of Probability', type: 'formula', content: '0 ≤ P(E) ≤ 1\nP(impossible event) = 0\nP(sure event) = 1', tag: 'Ch 15' },
+            ]
+          }
+        ]
+      },
+      science: {
+        name: 'Science',
+        icon: '🔬',
+        color: '#10b981',
+        sections: [
+          {
+            title: '⚗️ Chemical Reactions & Equations',
+            notes: [
+              { title: 'Types of Chemical Reactions', type: 'definition', content: '1. Combination: A + B → AB\n2. Decomposition: AB → A + B\n3. Displacement: A + BC → AC + B\n4. Double Displacement: AB + CD → AD + CB\n5. Redox: oxidation and reduction occur simultaneously', tag: 'Ch 1' },
+              { title: 'Balancing Equations', type: 'definition', content: 'Law of Conservation of Mass: matter cannot be created or destroyed. Total mass of reactants = total mass of products. Balance by adjusting coefficients, not subscripts.', tag: 'Ch 1' },
+              { title: 'Exothermic vs Endothermic', type: 'definition', content: 'Exothermic: releases heat/light (e.g., combustion, respiration)\nEndothermic: absorbs energy (e.g., decomposition of calcium carbonate, photosynthesis)', tag: 'Ch 1' },
+            ]
+          },
+          {
+            title: '🔩 Acids, Bases and Salts',
+            notes: [
+              { title: 'pH Scale', type: 'formula', content: 'pH < 7 → Acidic\npH = 7 → Neutral\npH > 7 → Basic/Alkaline\npH = −log[H⁺]', tag: 'Ch 2' },
+              { title: 'Neutralisation Reaction', type: 'formula', content: 'Acid + Base → Salt + Water\nHCl + NaOH → NaCl + H₂O', tag: 'Ch 2' },
+              { title: 'Common Salts', type: 'definition', content: 'Baking Soda: NaHCO₃ | Washing Soda: Na₂CO₃·10H₂O | Bleaching Powder: CaOCl₂ | Plaster of Paris: CaSO₄·½H₂O | Common Salt: NaCl', tag: 'Ch 2' },
+              { title: 'Chlor-Alkali Process', type: 'definition', content: 'Electrolysis of brine (NaCl solution): At cathode: H₂ gas | At anode: Cl₂ gas | In solution: NaOH formed. Used to produce bleaching powder and PVC.', tag: 'Ch 2' },
+            ]
+          },
+          {
+            title: '⚙️ Metals and Non-Metals',
+            notes: [
+              { title: 'Reactivity Series', type: 'definition', content: 'K > Na > Ca > Mg > Al > Zn > Fe > Pb > H > Cu > Hg > Ag > Au\n(Most reactive → Least reactive)', tag: 'Ch 3' },
+              { title: 'Ionic Bond Formation', type: 'definition', content: 'Metals lose electrons to form cations (+). Non-metals gain electrons to form anions (−). Electrostatic attraction between these ions forms ionic bonds.', tag: 'Ch 3' },
+              { title: 'Corrosion & Prevention', type: 'definition', content: 'Rusting: 4Fe + 3O₂ + xH₂O → 2Fe₂O₃·xH₂O\nPrevention: galvanization (Zn coating), alloying, painting, oil coating', tag: 'Ch 3' },
+            ]
+          },
+          {
+            title: '🧪 Carbon and its Compounds',
+            notes: [
+              { title: 'Covalent Bond', type: 'definition', content: 'Formed by sharing of electrons between atoms. Carbon forms 4 covalent bonds. Can be single (C−C), double (C=C), or triple (C≡C).', tag: 'Ch 4' },
+              { title: 'Homologous Series', type: 'definition', content: 'A series of compounds with the same functional group, each differing by −CH₂−. Example: Alkanes: CH₄, C₂H₆, C₃H₈... (differ by 14u in molecular mass)', tag: 'Ch 4' },
+              { title: 'Important Carbon Compounds', type: 'definition', content: 'Ethanol (C₂H₅OH): used in medicines, as fuel\nEthanoic Acid (CH₃COOH): vinegar\nSaponification: Fat + NaOH → Soap + Glycerol', tag: 'Ch 4' },
+            ]
+          },
+          {
+            title: '🌿 Life Processes',
+            notes: [
+              { title: 'Photosynthesis Equation', type: 'formula', content: '6CO₂ + 6H₂O + Light Energy → C₆H₁₂O₆ + 6O₂\n(in presence of chlorophyll)', tag: 'Ch 6' },
+              { title: 'Respiration Types', type: 'definition', content: 'Aerobic: C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + Energy (38 ATP)\nAnaerobic: C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂ + Energy (2 ATP)\nAnaerobic in muscles: glucose → lactic acid + energy (causes cramps)', tag: 'Ch 6' },
+              { title: 'Human Digestive System', type: 'definition', content: 'Mouth → Oesophagus → Stomach → Small Intestine → Large Intestine → Anus\nKey enzymes: Salivary amylase (mouth), Pepsin (stomach), Lipase/Trypsin (small intestine)', tag: 'Ch 6' },
+              { title: 'Blood Composition', type: 'definition', content: 'Plasma (55%): water, proteins, glucose, wastes\nRBC: carry O₂ using haemoglobin, no nucleus in mature form\nWBC: immune cells, have nucleus\nPlatelets: clotting', tag: 'Ch 6' },
+            ]
+          },
+          {
+            title: '🧠 Control and Coordination',
+            notes: [
+              { title: 'Reflex Arc', type: 'definition', content: 'Receptor → Sensory neuron → Spinal cord (reflex centre) → Motor neuron → Effector\nReflex actions are fast, involuntary responses that do not require brain processing.', tag: 'Ch 7' },
+              { title: 'Human Brain Parts', type: 'definition', content: 'Forebrain (Cerebrum): thinking, memory, voluntary actions\nMidbrain: relay signals\nHindbrain: Cerebellum (balance/coordination), Medulla (involuntary: heartbeat, breathing)', tag: 'Ch 7' },
+              { title: 'Plant Hormones', type: 'definition', content: 'Auxin: promotes cell elongation; phototropism\nGibberellin: stem elongation, seed germination\nCytokinin: cell division, delays aging\nAbscisic acid: inhibits growth, closes stomata in drought', tag: 'Ch 7' },
+            ]
+          },
+          {
+            title: '🔋 Electricity',
+            notes: [
+              { title: 'Ohm\'s Law', type: 'formula', content: 'V = IR\nwhere V = Voltage (V), I = Current (A), R = Resistance (Ω)', tag: 'Ch 12' },
+              { title: 'Resistance in Series vs Parallel', type: 'formula', content: 'Series: R = R₁ + R₂ + R₃ (same current, different voltage)\nParallel: 1/R = 1/R₁ + 1/R₂ + 1/R₃ (same voltage, different current)', tag: 'Ch 12' },
+              { title: 'Electric Power', type: 'formula', content: 'P = VI = I²R = V²/R\nPower unit: Watt (W)\nElectric energy = P × t (unit: kWh or joule)', tag: 'Ch 12' },
+              { title: 'Joule\'s Law of Heating', type: 'formula', content: 'H = I²Rt\nwhere H = Heat (J), I = Current (A), R = Resistance (Ω), t = Time (s)', tag: 'Ch 12' },
+            ]
+          },
+          {
+            title: '🔭 Light — Reflection & Refraction',
+            notes: [
+              { title: 'Mirror Formula', type: 'formula', content: '1/f = 1/v + 1/u\nMagnification: m = −v/u = h′/h\n(Use sign convention: distances measured from pole)', tag: 'Ch 10' },
+              { title: 'Lens Formula', type: 'formula', content: '1/f = 1/v − 1/u\nMagnification: m = v/u = h′/h\nPower of lens: P = 1/f (unit: dioptre D)', tag: 'Ch 11' },
+              { title: 'Snell\'s Law', type: 'formula', content: 'n₁ sin θ₁ = n₂ sin θ₂\nRefractive index: n = sin i / sin r = c/v = λ₁/λ₂', tag: 'Ch 11' },
+              { title: 'Dispersion of Light', type: 'definition', content: 'White light splits into VIBGYOR (Violet, Indigo, Blue, Green, Yellow, Orange, Red) when passed through a prism. Violet deviates most, Red deviates least. Caused by different speeds of different wavelengths in glass.', tag: 'Ch 11' },
+            ]
+          }
+        ]
+      },
+      english: {
+        name: 'English',
+        icon: '📝',
+        color: '#f59e0b',
+        sections: [
+          {
+            title: '📚 First Flight — Prose Summary',
+            notes: [
+              { title: 'A Letter to God — Summary', type: 'definition', content: 'Lencho, a poor farmer, writes a letter to God asking for 100 pesos after his crop is destroyed by hail. Post office workers find it touching and collect 70 pesos to help. Lencho writes again complaining that 30 pesos are missing, not trusting the post office men — ironic as he trusted God but not humans.', tag: 'Ch 1' },
+              { title: 'Nelson Mandela: Long Walk to Freedom', type: 'definition', content: 'Mandela\'s inauguration speech highlights the end of apartheid. He speaks about the two obligations every man has — to his family and to his nation. Key themes: freedom, equality, duty, courage. "The greatest glory in living lies not in never falling, but in rising every time we fall."', tag: 'Ch 2' },
+              { title: 'Two Stories About Flying', type: 'definition', content: 'His First Flight: A young seagull overcomes fear and learns to fly. Theme: Overcoming fear, self-belief, necessity as a teacher.\nBlack Aeroplane: Mysterious pilot helps narrator through storm clouds. Theme: Mystery, faith, helping strangers.', tag: 'Ch 3' },
+              { title: 'From the Diary of Anne Frank', type: 'definition', content: 'Anne Frank\'s diary reflects loneliness and the need for a true friend. She writes to an imaginary friend "Kitty". Anne values nature, freedom, and self-expression. Written during WWII hiding from Nazis.', tag: 'Ch 4' },
+              { title: 'The Hundred Dresses (Parts I & II)', type: 'definition', content: 'Wanda Petronski, a poor Polish girl, claims to own hundred dresses to avoid mockery. She wins the drawing contest. Maddie feels guilty for her silence. Theme: bullying, empathy, social justice, judging by appearances.', tag: 'Ch 5' },
+            ]
+          },
+          {
+            title: '📜 First Flight — Poetry',
+            notes: [
+              { title: 'Dust of Snow — Robert Frost', type: 'definition', content: 'A crow shakes snow from a hemlock tree onto the poet. This simple act changes his mood and saves a part of the day. Theme: joy in small things, nature\'s healing power. Symbols: Crow (bad omen), Hemlock (poison) but still brought joy — irony.', tag: 'Poetry' },
+              { title: 'Fire and Ice — Robert Frost', type: 'definition', content: 'World may end in fire (desire) or ice (hatred). Both are equally destructive. Fire = desire, passion, violence. Ice = indifference, cruelty, hatred. Message: Human emotions are powerful enough to destroy civilization.', tag: 'Poetry' },
+              { title: 'A Tiger in the Zoo', type: 'definition', content: 'Contrasts a tiger\'s free wild life vs its confined zoo existence. In the zoo, the tiger paces helplessly, ignores visitors. Theme: freedom vs captivity, animal rights, loss of dignity. The "brilliant eyes" at night = longing for freedom.', tag: 'Poetry' },
+              { title: 'Amanda! — Robin Klein', type: 'definition', content: 'A child named Amanda daydreams of freedom from constant nagging. Imagines herself as an orphan, mermaid, Rapunzel. Theme: over-parenting, a child\'s desire for freedom, generation gap. "Don\'t sulk" — irony of accusing the child of sulking after constant criticism.', tag: 'Poetry' },
+            ]
+          },
+          {
+            title: '📖 Footprints Without Feet',
+            notes: [
+              { title: 'A Triumph of Surgery', type: 'definition', content: 'Tricki, an overweight dog, is taken to a vet by Mr. Herriot. He is not given food for two days but exercises well with other dogs. He loses weight and is healthy when returned. Theme: sometimes tough love and restraint is the best medicine.', tag: 'Ch 1' },
+              { title: 'Footprints Without Feet', type: 'definition', content: 'Griffin, a scientist, discovers invisibility formula. Becomes lawless, commits crimes, terrorizes a village. Mrs. Hall thinks he is weird; eventually the Inspector tries to catch him. Theme: Science without ethics is dangerous; power misused becomes destructive.', tag: 'Ch 5' },
+              { title: 'The Thief\'s Story', type: 'definition', content: 'Hari Singh, a thief, befriends Anil. He robs him but returns the money, moved by Anil\'s trust. Theme: trust, redemption, moral awakening, the power of kindness. Anil teaches Hari to read — symbolic of a new beginning.', tag: 'Ch 2' },
+            ]
+          },
+          {
+            title: '✍️ Grammar Quick Reference',
+            notes: [
+              { title: 'Tenses — Quick Summary', type: 'definition', content: 'Simple Present: V1/V1+s/es | Present Continuous: is/am/are + V1+ing\nSimple Past: V2 | Past Continuous: was/were + V1+ing\nPresent Perfect: has/have + V3 | Past Perfect: had + V3\nSimple Future: will/shall + V1 | Future Perfect: will have + V3', tag: 'Grammar' },
+              { title: 'Active to Passive Voice Rules', type: 'definition', content: 'Subject + Verb + Object → Object + be(conjugated) + V3 + by + Subject\nE.g.: "Ravi writes a letter" → "A letter is written by Ravi"\nRule: Change the form of "to be" to match the tense of the original verb.', tag: 'Grammar' },
+              { title: 'Reported Speech Rules', type: 'definition', content: 'Direct → Indirect: Change pronouns, tense (backshift), remove inverted commas.\nsays/say → no change | said → said\nPresent Simple → Past Simple | Present Continuous → Past Continuous\n"will" → "would" | "can" → "could" | "am/is/are" → "was/were"', tag: 'Grammar' },
+              { title: 'Articles (A, An, The)', type: 'definition', content: 'A: before consonant sounds (a book, a university)\nAn: before vowel sounds (an egg, an hour)\nThe: specific/known nouns, unique things (the sun, the moon), superlatives, ordinal numbers', tag: 'Grammar' },
+            ]
+          }
+        ]
+      },
+      sst: {
+        name: 'Social Science',
+        icon: '🌍',
+        color: '#ef4444',
+        sections: [
+          {
+            title: '🌏 History: Nationalism in Europe',
+            notes: [
+              { title: 'Rise of Nationalism', type: 'definition', content: 'Nationalism emerged in Europe in the 19th century. The French Revolution (1789) spread ideas of liberty, equality, fraternity. Napoleon unified Europe under French law but also sparked nationalist resistance. Cultural symbols (flags, songs, myths) became tools of nation-building.', tag: 'Ch 1' },
+              { title: 'Unification of Germany and Italy', type: 'definition', content: 'Germany: Unified under Otto von Bismarck (Prussia) through "blood and iron" policy. 1871: German Empire proclaimed at Versailles.\nItaly: Unified under Cavour (diplomacy), Garibaldi (military — Red Shirts), and Mazzini (ideology). 1871: Rome became capital.', tag: 'Ch 1' },
+              { title: 'Zollverein', type: 'definition', content: 'A customs union formed in 1834 by Prussia that abolished tariff barriers between German states. It played a key role in German economic integration and national unity.', tag: 'Ch 1' },
+            ]
+          },
+          {
+            title: '🌐 History: Nationalist Movements in Indo-China',
+            notes: [
+              { title: 'French Colonialism in Vietnam', type: 'definition', content: 'French colonized Vietnam in late 19th century. They exploited rubber plantations and set up a "civilizing mission." Scholars\' Revolt (1868), Farmers\' Revolt, Hoa Hao movement (1939). The Rat Hunt of 1902 is a famous example of Vietnamese resistance.', tag: 'Ch 2' },
+              { title: 'Ho Chi Minh', type: 'definition', content: 'Leader of Vietnamese independence movement. Founded Viet Minh (1941) to fight both Japan and France. Led North Vietnam. Used guerrilla warfare tactics. America later got involved (Vietnam War 1955–1975).', tag: 'Ch 2' },
+            ]
+          },
+          {
+            title: '🇮🇳 History: Nationalism in India',
+            notes: [
+              { title: 'Non-Cooperation Movement (1920)', type: 'definition', content: 'Led by Gandhi. Boycott of British goods, schools, courts, elections. Mass resignations of titles. United Hindus, Muslims (Khilafat issue). Called off after Chauri Chaura incident (Feb 1922) — violence by crowd.', tag: 'Ch 3' },
+              { title: 'Civil Disobedience Movement (1930)', type: 'definition', content: 'Salt March (Dandi March) — Gandhi walks 240 miles to make salt, defying British salt law. Breaking salt laws, boycotting foreign cloth. Karachi session 1931 — Gandhi-Irwin Pact. Peasants, tribals, women participated widely.', tag: 'Ch 3' },
+              { title: 'Quit India Movement (1942)', type: 'definition', content: '"Do or Die" call by Gandhi at Gowalia Tank, Mumbai. Most comprehensive mass movement. Congress leaders arrested. Parallel governments set up in Ballia, Midnapore. Laid final groundwork for independence (1947).', tag: 'Ch 3' },
+            ]
+          },
+          {
+            title: '🌱 Geography: Resources and Development',
+            notes: [
+              { title: 'Classification of Resources', type: 'definition', content: 'On basis of origin: Biotic (plants, animals) vs Abiotic (rocks, metals)\nOn basis of exhaustibility: Renewable (solar, wind, water) vs Non-renewable (coal, petroleum)\nOn basis of ownership: Individual, Community, National, International', tag: 'Ch 1' },
+              { title: 'Soil Types in India', type: 'definition', content: 'Alluvial Soil: Most fertile; Ganga plains; Khadar (new) and Bangar (old); rice, wheat, sugarcane\nBlack Soil (Regur): Deccan trap; holds moisture; cotton\nRed & Yellow: Low fertility; iron oxide; millets\nLaterite: High rainfall areas; cashew, tea, coffee', tag: 'Ch 1' },
+            ]
+          },
+          {
+            title: '💰 Economics: Development',
+            notes: [
+              { title: 'Development Goals', type: 'definition', content: 'Development means more than just higher income. It includes: higher standard of living, less inequality, freedom, security, better education/health. Different people have different development goals. Development of one may be destructive for another.', tag: 'Ch 1' },
+              { title: 'National Income Measures', type: 'definition', content: 'GDP (Gross Domestic Product): total value of goods and services produced within a country in a year.\nPer Capita Income: GDP / Population — used to compare countries\nHDI (Human Development Index): combines income, education, health expectancy', tag: 'Ch 1' },
+              { title: 'Sectors of Economy', type: 'definition', content: 'Primary: agriculture, forestry, fishing, mining (nature-based)\nSecondary: manufacturing, construction (processing primary goods)\nTertiary/Services: banking, transport, IT, education\nIndia: Tertiary sector has grown most in recent years.', tag: 'Ch 2' },
+            ]
+          },
+          {
+            title: '🗳️ Political Science: Power Sharing',
+            notes: [
+              { title: 'Belgium vs Sri Lanka', type: 'definition', content: 'Belgium: Diverse (Dutch/French/German) — adopted flexible power-sharing, federal structure. Avoided conflict.\nSri Lanka: Sinhala made official language (1956), alienating Tamils. Led to civil war. Lesson: ignoring minorities leads to conflict.', tag: 'Ch 1' },
+              { title: 'Forms of Power Sharing', type: 'definition', content: '1. Horizontal: among legislative, executive, judiciary\n2. Vertical: federal (Centre, State, Local)\n3. Among social groups: representation of minorities, women\n4. Among political parties, pressure groups, movements', tag: 'Ch 1' },
+              { title: 'Federalism', type: 'definition', content: 'System of governance with two or more levels. India: Union List (defence, foreign affairs), State List (police, agriculture), Concurrent List (education, forests). Rajya Sabha gives states representation at Centre.', tag: 'Ch 2' },
+            ]
+          }
+        ]
+      },
+      it: {
+        name: 'Information Technology',
+        icon: '💻',
+        color: '#8b5cf6',
+        sections: [
+          {
+            title: '🖥️ IT Tools and Business Systems',
+            notes: [
+              { title: 'Communication Life Cycle', type: 'definition', content: 'Idea → Encoding → Transmission (through channel) → Decoding → Feedback\nTypes: Verbal (spoken), Non-verbal (gestures, body language), Written (email, letter), Visual (graphs, charts)', tag: 'Unit 1' },
+              { title: 'Types of Networks', type: 'definition', content: 'LAN (Local Area Network): Small area, e.g. office, school\nMAN (Metropolitan Area Network): City-wide\nWAN (Wide Area Network): Countries, e.g. Internet\nPAN (Personal Area Network): Bluetooth devices within 10m', tag: 'Unit 1' },
+              { title: 'Network Topologies', type: 'definition', content: 'Bus: All devices on one cable | Star: All connected to central hub | Ring: Circular chain | Mesh: Every device connected to every other | Tree: Hierarchical combination of star and bus', tag: 'Unit 1' },
+              { title: 'Internet Services', type: 'definition', content: 'WWW: Web pages accessed via browser\nEmail: Electronic mail using SMTP/POP3\nFTP: File Transfer Protocol\nVoIP: Voice over Internet Protocol\nE-commerce: Online buying/selling\nCloud Computing: Services via internet (AWS, Google Cloud)', tag: 'Unit 1' },
+            ]
+          },
+          {
+            title: '🗄️ Database Management',
+            notes: [
+              { title: 'Database Concepts', type: 'definition', content: 'Database: Organized collection of related data\nDBMS: Software to manage databases (e.g. MySQL, MS Access)\nTable: Data stored in rows (records) and columns (fields)\nPrimary Key: Unique identifier for each record (no duplicates, no null)', tag: 'Unit 2' },
+              { title: 'SQL Basics', type: 'formula', content: 'SELECT column FROM table WHERE condition;\nINSERT INTO table VALUES (val1, val2);\nUPDATE table SET col=val WHERE cond;\nDELETE FROM table WHERE condition;\nCREATE TABLE name (col1 type, col2 type);', tag: 'Unit 2' },
+              { title: 'Data Types in SQL', type: 'definition', content: 'INT: whole numbers | FLOAT: decimal numbers | VARCHAR(n): variable-length text | CHAR(n): fixed-length text | DATE: date values | BOOLEAN: true/false', tag: 'Unit 2' },
+              { title: 'Constraints', type: 'definition', content: 'PRIMARY KEY: unique, not null\nFOREIGN KEY: links to primary key of another table\nNOT NULL: field cannot be empty\nUNIQUE: no duplicate values\nDEFAULT: auto-fills value if not provided\nCHECK: validates condition', tag: 'Unit 2' },
+            ]
+          },
+          {
+            title: '🌐 Web Technologies',
+            notes: [
+              { title: 'HTML Basics', type: 'formula', content: '<!DOCTYPE html> — declares document type\n<html> → <head> (metadata) + <body> (content)\nCommon tags: <h1>-<h6>, <p>, <a href>, <img src>, <ul>/<ol>/<li>, <table>, <form>, <input>', tag: 'Unit 3' },
+              { title: 'CSS Selectors', type: 'formula', content: 'Element: p { color: red; }\nClass: .myclass { }\nID: #myid { }\nDescendant: div p { }\nPseudo: a:hover { }\nBox model: content → padding → border → margin', tag: 'Unit 3' },
+              { title: 'JavaScript Basics', type: 'formula', content: 'var/let/const — declare variables\nif/else, switch — conditions\nfor, while, do-while — loops\nfunction name() { } — define functions\ndocument.getElementById() — DOM access\nalert(), console.log() — output', tag: 'Unit 3' },
+            ]
+          },
+          {
+            title: '🔒 Cyber Safety',
+            notes: [
+              { title: 'Common Cyber Threats', type: 'definition', content: 'Virus: Self-replicating malicious program\nWorm: Spreads through network without user action\nTrojan: Disguised as legitimate software\nSpyware: Monitors user activity secretly\nRansomware: Encrypts files and demands payment\nPhishing: Fake websites/emails to steal credentials', tag: 'Unit 4' },
+              { title: 'Safe Internet Practices', type: 'definition', content: '• Use strong passwords (8+ chars, mix of cases, numbers, symbols)\n• Enable 2-Factor Authentication\n• Don\'t share personal info publicly\n• Check for HTTPS before entering info\n• Regular backups\n• Keep software updated\n• Avoid pirated software and unknown links', tag: 'Unit 4' },
+              { title: 'IT Act 2000', type: 'definition', content: 'India\'s first law for e-commerce and cybercrime. Key provisions: Legal recognition of electronic records and digital signatures. Sections: 43 (unauthorized access), 66 (hacking), 67 (obscene content), 72 (breach of confidentiality), 79 (intermediary liability).', tag: 'Unit 4' },
+            ]
+          }
+        ]
+      }
+    };
+
+    const STUDY_TIPS = [
+      "Use spaced repetition — review notes after 1 day, 3 days, 1 week, 1 month.",
+      "Teach what you've learned to someone else — it solidifies understanding.",
+      "Solve last 5 years' CBSE papers for every subject.",
+      "Take a 10-minute break every 45 minutes of study.",
+      "Active recall beats passive re-reading — test yourself constantly.",
+      "Sleep 8 hours — memory consolidation happens during sleep.",
+      "Write formulas by hand 3 times — motor memory reinforces learning.",
+    ];
+
+    // ===== STATE =====
+    let currentSubject = 'maths';
+    let searchQuery = '';
+
+    // ===== INIT =====
+    function init() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const subjectParam = urlParams.get('subject');
+      if (subjectParam && NOTES_DATA[subjectParam]) {
+        const btn = document.getElementById('btn-' + subjectParam);
+        if (btn) {
+          document.querySelectorAll('.subject-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentSubject = subjectParam;
+        }
+      }
+      renderNotes();
+      // Random study tip
+      document.getElementById('study-tip').textContent = STUDY_TIPS[Math.floor(Math.random() * STUDY_TIPS.length)];
+    }
+
+    function selectSubject(subject, btn) {
+      currentSubject = subject;
+      document.querySelectorAll('.subject-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      searchQuery = '';
+      document.getElementById('notes-search-input').value = '';
+      renderNotes();
+    }
+
+    function searchNotes(query) {
+      searchQuery = query.toLowerCase();
+      renderNotes();
+    }
+
+    function clearSearch() {
+      searchQuery = '';
+      document.getElementById('notes-search-input').value = '';
+      renderNotes();
+    }
+
+    function renderNotes() {
+      const container = document.getElementById('notes-content');
+      const data = NOTES_DATA[currentSubject];
+      if (!data) return;
+
+      let html = `<div style="margin-bottom:24px;"><h2 style="font-size:24px;font-weight:800;color:var(--text);">${data.icon} ${data.name} Notes</h2><p style="color:var(--text-muted);font-size:14px;margin-top:4px;">CBSE Class 10 · Complete revision material</p></div>`;
+
+      let found = 0;
+      data.sections.forEach(section => {
+        const matchingNotes = section.notes.filter(note => {
+          if (!searchQuery) return true;
+          return note.title.toLowerCase().includes(searchQuery) ||
+            note.content.toLowerCase().includes(searchQuery) ||
+            section.title.toLowerCase().includes(searchQuery);
+        });
+
+        if (matchingNotes.length === 0) return;
+        found += matchingNotes.length;
+
+        html += `<div class="notes-section"><div class="notes-section-title">${section.title}</div>`;
+        html += `<div class="notes-grid">`;
+        matchingNotes.forEach(note => {
+          html += renderNoteCard(note, data.color);
+        });
+        html += `</div></div>`;
+      });
+
+      if (found === 0) {
+        html += `<div class="no-results"><div style="font-size:48px;">🔍</div><div style="font-size:18px;font-weight:700;margin:12px 0 8px;">No notes found</div><div style="color:var(--text-muted);">Try a different search term</div></div>`;
+      }
+
+      container.innerHTML = html;
+    }
+
+    function renderNoteCard(note, color) {
+      const formattedContent = note.content.replace(/\n/g, '<br>');
+      const typeLabel = note.type === 'formula' ? '📐 Formula' : '📖 Definition';
+      const typeColor = note.type === 'formula' ? '#4f46e5' : '#10b981';
+
+      return `<div class="note-card" style="border-left: 3px solid ${color};">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;gap:8px;flex-wrap:wrap;">
+          <h4>${note.title}</h4>
+          <div style="display:flex;gap:6px;flex-shrink:0;">
+            <span class="chapter-badge">${note.tag}</span>
+            <span style="padding:3px 10px;background:${typeColor}18;color:${typeColor};border-radius:999px;font-size:11px;font-weight:700;">${typeLabel}</span>
+          </div>
+        </div>
+        <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;font-family:${note.type === 'formula' ? "'Courier New', monospace" : 'inherit'};">${formattedContent}</div>
+      </div>`;
+    }
+
+    init();
+  </script>
+</body>
+</html>

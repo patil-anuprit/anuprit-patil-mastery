@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Zone — Board Mastery by Anuprit Patil</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .quiz-start-screen { text-align: center; }
+    .quiz-complete-review { margin-top: 24px; text-align: left; }
+    .review-item { padding: 14px; border-radius: var(--radius); margin-bottom: 10px; border-left: 4px solid; }
+    .review-item.correct { background: rgba(16,185,129,0.08); border-color: var(--success); }
+    .review-item.wrong { background: rgba(239,68,68,0.08); border-color: var(--danger); }
+    .review-q { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .review-a { font-size: 13px; }
+    .history-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+    .history-card { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; }
+    .history-subject { font-size: 13px; font-weight: 700; color: var(--text); }
+    .history-score { font-size: 20px; font-weight: 800; color: var(--primary); }
+    .history-date { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  </style>
+</head>
+<body>
+  <div id="page-loader"><div class="loader-logo">AP</div><div style="color:rgba(255,255,255,0.6);font-size:14px;">Loading Quiz...</div><div class="loader-bar"><div class="loader-bar-fill"></div></div></div>
+  <div class="toast-container"></div>
+
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-brand">
+        <div class="nav-logo">AP</div>
+        <div><div class="nav-brand-text">Board Mastery</div><div class="nav-brand-sub">by Anuprit Patil</div></div>
+      </a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="planner.html" class="nav-link">Planner</a>
+        <a href="notes.html" class="nav-link">Notes Hub</a>
+        <a href="quiz.html" class="nav-link">Quiz Zone</a>
+        <a href="about.html" class="nav-link">About</a>
+      </div>
+      <div class="nav-actions">
+        <button class="theme-toggle">🌙</button>
+        <a href="planner.html" class="nav-link nav-cta">Start Studying →</a>
+      </div>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="index.html" class="nav-link">🏠 Home</a>
+    <a href="planner.html" class="nav-link">📅 Study Planner</a>
+    <a href="notes.html" class="nav-link">📚 Notes Hub</a>
+    <a href="quiz.html" class="nav-link">🎯 Quiz Zone</a>
+    <a href="about.html" class="nav-link">👤 About Anuprit</a>
+    <button class="theme-toggle" style="width:100%;border-radius:8px;height:44px;margin-top:8px;">Toggle Theme</button>
+  </div>
+
+  <main>
+    <div class="page-header">
+      <div class="container">
+        <div class="page-header-badge">🎯 Quiz Zone</div>
+        <h1 class="page-header-title">Test Your Board Readiness</h1>
+        <p class="page-header-subtitle">Interactive MCQ quizzes for all 5 subjects with instant scoring, explanations, and progress tracking.</p>
+      </div>
+    </div>
+
+    <section class="section-sm">
+      <div class="container">
+        <div class="quiz-layout">
+          <!-- SUBJECT SELECTION -->
+          <div id="subject-selection" class="quiz-start-screen">
+            <h2 style="font-size:22px;font-weight:800;color:var(--text);margin-bottom:8px;">Choose Your Subject</h2>
+            <p style="color:var(--text-muted);font-size:14px;margin-bottom:28px;">Select a subject and test your knowledge with 10 questions.</p>
+            <div class="quiz-subject-grid">
+              <div class="quiz-subject-card" onclick="startQuiz('maths')">
+                <div class="quiz-subject-icon">📐</div>
+                <div class="quiz-subject-name">Mathematics</div>
+                <div class="quiz-subject-count">10 Questions</div>
+              </div>
+              <div class="quiz-subject-card" onclick="startQuiz('science')">
+                <div class="quiz-subject-icon">🔬</div>
+                <div class="quiz-subject-name">Science</div>
+                <div class="quiz-subject-count">10 Questions</div>
+              </div>
+              <div class="quiz-subject-card" onclick="startQuiz('english')">
+                <div class="quiz-subject-icon">📝</div>
+                <div class="quiz-subject-name">English</div>
+                <div class="quiz-subject-count">10 Questions</div>
+              </div>
+              <div class="quiz-subject-card" onclick="startQuiz('sst')">
+                <div class="quiz-subject-icon">🌍</div>
+                <div class="quiz-subject-name">Social Science</div>
+                <div class="quiz-subject-count">10 Questions</div>
+              </div>
+              <div class="quiz-subject-card" onclick="startQuiz('it')">
+                <div class="quiz-subject-icon">💻</div>
+                <div class="quiz-subject-name">Information Tech</div>
+                <div class="quiz-subject-count">10 Questions</div>
+              </div>
+            </div>
+
+            <!-- SCORE HISTORY -->
+            <div id="score-history-section" style="margin-top:48px;text-align:left;">
+              <h3 style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:16px;">📊 Your Score History</h3>
+              <div id="history-content"></div>
+            </div>
+          </div>
+
+          <!-- QUIZ AREA -->
+          <div id="quiz-area" style="display:none;">
+            <div class="quiz-container">
+              <div class="quiz-header">
+                <div class="quiz-progress-info" id="q-progress">Question 1 of 10</div>
+                <div class="quiz-score-live" id="q-score">Score: 0</div>
+              </div>
+              <div class="progress-wrap quiz-progress-bar" style="height:4px;">
+                <div class="progress-bar" id="q-progress-bar" style="width:0%;transition:width 0.4s ease;"></div>
+              </div>
+              <div class="quiz-body">
+                <div class="quiz-question" id="q-question"></div>
+                <div class="quiz-options" id="q-options"></div>
+                <div class="quiz-explanation" id="q-explanation"></div>
+              </div>
+              <div class="quiz-footer">
+                <button onclick="goBack()" class="btn btn-secondary btn-sm">← Back to Subjects</button>
+                <button onclick="nextQuestion()" class="btn btn-primary" id="q-next-btn" disabled>Next →</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- RESULTS AREA -->
+          <div id="results-area" style="display:none;">
+            <div class="quiz-container">
+              <div class="quiz-results">
+                <div class="result-circle" id="result-circle">
+                  <div class="result-score" id="result-score">0</div>
+                  <div class="result-total" id="result-total">/ 10</div>
+                </div>
+                <div class="result-title" id="result-title">Quiz Complete!</div>
+                <div class="result-subtitle" id="result-subtitle">Here's how you did.</div>
+                <div style="display:flex;gap:12px;justify-content:center;margin-bottom:32px;flex-wrap:wrap;">
+                  <button onclick="retryQuiz()" class="btn btn-primary">🔄 Retry Quiz</button>
+                  <button onclick="goBack()" class="btn btn-secondary">← Change Subject</button>
+                  <a href="notes.html" class="btn btn-ghost">📚 Review Notes</a>
+                </div>
+
+                <!-- Review answers -->
+                <div class="quiz-complete-review">
+                  <h3 style="font-size:17px;font-weight:700;margin-bottom:12px;">📋 Answer Review</h3>
+                  <div id="review-list"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-bottom" style="max-width:1200px;margin:0 auto;border-top:none;padding:24px 0 0;">
+      <div>Built with dedication by <a href="about.html">Anuprit Patil</a> · Board Mastery</div>
+      <div><a href="index.html">Home</a> · <a href="notes.html">Notes</a> · <a href="planner.html">Planner</a></div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    // ===== QUIZ DATA =====
+    const QUIZ_DATA = {
+      maths: {
+        name: 'Mathematics',
+        icon: '📐',
+        questions: [
+          { q: 'What is the sum of the zeros of the polynomial p(x) = 2x² − 8x + 6?', options: ['4', '3', '−4', '6'], answer: 0, explanation: 'Sum of zeros = −b/a = −(−8)/2 = 4.' },
+          { q: 'The HCF of 12 and 18 is:', options: ['6', '4', '36', '3'], answer: 0, explanation: 'Prime factorisation: 12=2²×3, 18=2×3². HCF = 2×3 = 6.' },
+          { q: 'Which of the following has a terminating decimal expansion?', options: ['7/12', '17/8', '64/455', '29/343'], answer: 1, explanation: '17/8 = 17/2³. Denominator has only factor 2, so it terminates. 17/8 = 2.125.' },
+          { q: 'In an AP, if a = 5 and d = 3, what is the 10th term?', options: ['32', '30', '35', '29'], answer: 0, explanation: 'a₁₀ = a + (n−1)d = 5 + 9×3 = 5 + 27 = 32.' },
+          { q: 'The discriminant of x² − 4x + 4 = 0 is:', options: ['0', '16', '−16', '8'], answer: 0, explanation: 'D = b²−4ac = (−4)²−4(1)(4) = 16−16 = 0. Two equal real roots.' },
+          { q: 'The distance between points (3, 4) and (0, 0) is:', options: ['5', '7', '√7', '12'], answer: 0, explanation: 'd = √(3²+4²) = √(9+16) = √25 = 5.' },
+          { q: 'Value of sin²60° + cos²60° equals:', options: ['1', '0', '√3/2', '1/2'], answer: 0, explanation: 'This is the Pythagorean identity: sin²θ + cos²θ = 1 for all θ.' },
+          { q: 'The total surface area of a cylinder with r=7 cm and h=10 cm is:', options: ['748 cm²', '374 cm²', '440 cm²', '660 cm²'], answer: 0, explanation: 'TSA = 2πr(r+h) = 2×(22/7)×7×(7+10) = 44×17 = 748 cm².' },
+          { q: 'A card is drawn from a well-shuffled deck of 52 cards. Probability of getting a king is:', options: ['1/13', '1/52', '4/13', '1/4'], answer: 0, explanation: 'There are 4 kings in 52 cards. P(king) = 4/52 = 1/13.' },
+          { q: 'The midpoint of segment joining (2, 3) and (6, 7) is:', options: ['(4, 5)', '(3, 4)', '(8, 10)', '(4, 4)'], answer: 0, explanation: 'Midpoint = ((2+6)/2, (3+7)/2) = (4, 5).' },
+        ]
+      },
+      science: {
+        name: 'Science',
+        icon: '🔬',
+        questions: [
+          { q: 'The process by which plants make food using sunlight is called:', options: ['Respiration', 'Photosynthesis', 'Transpiration', 'Digestion'], answer: 1, explanation: 'Photosynthesis: 6CO₂ + 6H₂O + Light → C₆H₁₂O₆ + 6O₂. Occurs in chloroplasts.' },
+          { q: 'The pH of a neutral solution is:', options: ['0', '14', '7', '10'], answer: 2, explanation: 'pH 7 = neutral. Below 7 = acidic, above 7 = basic/alkaline.' },
+          { q: 'Which of the following is a physical change?', options: ['Burning of wood', 'Melting of ice', 'Rusting of iron', 'Cooking of food'], answer: 1, explanation: 'Melting of ice is physical — it is reversible and no new substance is formed. The other three are chemical changes.' },
+          { q: 'The resistance of a conductor is directly proportional to its:', options: ['Area of cross-section', 'Temperature only', 'Length', 'Mass'], answer: 2, explanation: 'R = ρL/A. Resistance is directly proportional to length (L) and inversely proportional to area (A).' },
+          { q: 'Which gas is produced at the anode during electrolysis of brine?', options: ['Hydrogen', 'Oxygen', 'Chlorine', 'Sodium'], answer: 2, explanation: 'Brine is NaCl solution. At anode: 2Cl⁻ → Cl₂ + 2e⁻. At cathode: 2H⁺ + 2e⁻ → H₂.' },
+          { q: 'The formula for Plaster of Paris is:', options: ['CaSO₄·2H₂O', 'CaSO₄·½H₂O', 'CaSO₄', 'Ca(OH)₂'], answer: 1, explanation: 'Plaster of Paris is CaSO₄·½H₂O (calcium sulphate hemihydrate). Sets hard when mixed with water.' },
+          { q: 'Which type of mirror is used in the rear-view mirror of vehicles?', options: ['Concave mirror', 'Plane mirror', 'Convex mirror', 'None'], answer: 2, explanation: 'Convex mirror gives a wider field of view and always forms virtual, erect, diminished images — ideal for rear-view.' },
+          { q: 'The part of the brain that controls involuntary actions like heartbeat is:', options: ['Cerebrum', 'Cerebellum', 'Medulla oblongata', 'Hypothalamus'], answer: 2, explanation: 'Medulla oblongata (part of hindbrain) controls involuntary actions: breathing, heartbeat, blood pressure.' },
+          { q: 'Carbon forms mainly which type of bonds?', options: ['Ionic bonds', 'Metallic bonds', 'Covalent bonds', 'Hydrogen bonds'], answer: 2, explanation: 'Carbon has 4 valence electrons and forms 4 covalent bonds by electron sharing. This leads to the vast variety of organic compounds.' },
+          { q: 'The hardest natural substance is:', options: ['Iron', 'Diamond', 'Gold', 'Platinum'], answer: 1, explanation: 'Diamond (allotrope of carbon) is the hardest natural substance known. Each carbon atom is bonded to 4 others in a tetrahedral structure.' },
+        ]
+      },
+      english: {
+        name: 'English',
+        icon: '📝',
+        questions: [
+          { q: 'In "A Letter to God", why does Lencho not trust the post office employees?', options: ['They steal his money', 'He thinks they kept 30 pesos', 'He doesn\'t like writing', 'He got no reply'], answer: 1, explanation: 'Lencho believed only God could help him. When he received 70 pesos instead of 100, he assumed post office workers were "a bunch of crooks" who kept the rest.' },
+          { q: 'What is the rhyme scheme of "Dust of Snow" by Robert Frost?', options: ['ABBA ABBA', 'AABB CCDD', 'ABAB CDCD', 'ABCD ABCD'], answer: 2, explanation: 'Dust of Snow follows the ABAB CDCD rhyme scheme across its two stanzas.' },
+          { q: 'In "Fire and Ice", what does "Fire" symbolize?', options: ['Destruction by cold', 'Hatred and cruelty', 'Desire and passion', 'War and conflict'], answer: 2, explanation: '"Some say the world will end in fire" — fire represents desire, passion, and greed that can destroy the world.' },
+          { q: 'Who was Wanda Petronski in "The Hundred Dresses"?', options: ['A rich American girl', 'A Polish immigrant girl', 'A British student', 'The teacher'], answer: 1, explanation: 'Wanda Petronski was a poor Polish immigrant girl who was bullied at school for her unusual name and claim of owning hundred dresses.' },
+          { q: 'What is the passive voice of "He writes a letter"?', options: ['A letter writes him', 'A letter is written by him', 'A letter was written by him', 'A letter has been written by him'], answer: 1, explanation: 'Present Simple Active → Present Simple Passive. "He writes" → "is written by him". Subject becomes agent, object becomes new subject.' },
+          { q: 'In "The Thief\'s Story", what was Hari Singh\'s profession?', options: ['Student', 'Shopkeeper', 'Thief', 'Writer'], answer: 2, explanation: 'Hari Singh was an experienced thief who befriended Anil. Anil\'s trust and kindness ultimately prevented Hari from stealing his money.' },
+          { q: 'Which article is used before the word "hour"?', options: ['A', 'An', 'The', 'No article'], answer: 1, explanation: '"Hour" starts with a vowel sound (/aʊər/), so "an" is used: "an hour". It\'s about the sound, not the letter.' },
+          { q: 'In "A Tiger in the Zoo", what does the tiger do in its cage?', options: ['Sleeps all day', 'Paces in his cage', 'Plays with visitors', 'Roars loudly'], answer: 1, explanation: 'The tiger "stalks the length of his cage" — it paces endlessly, a symbol of its helplessness and longing for freedom.' },
+          { q: 'The reported speech of: He said, "I am happy" is:', options: ['He said he is happy', 'He said that he was happy', 'He says that he is happy', 'He told he was happy'], answer: 1, explanation: 'Backshift rule: "am" (Present) → "was" (Past). Use "that" and remove inverted commas. "He said that he was happy."' },
+          { q: 'What does Mandela mean by "two obligations" in his inauguration speech?', options: ['Obligations to family and friends', 'Obligations to family and nation', 'Obligations to Africa and India', 'Obligations to Whites and Blacks'], answer: 1, explanation: 'Mandela says every man has obligations to his family, parents, and to his country and community. Both must be fulfilled.' },
+        ]
+      },
+      sst: {
+        name: 'Social Science',
+        icon: '🌍',
+        questions: [
+          { q: 'The Non-Cooperation Movement was called off in 1922 due to:', options: ['Success of the movement', 'Gandhi\'s illness', 'Chauri Chaura incident', 'British negotiations'], answer: 2, explanation: 'The Chauri Chaura incident (Feb 1922) — a crowd burned a police station killing 22 policemen — led Gandhi to call off the Non-Cooperation Movement, as he believed the movement had become violent.' },
+          { q: 'The Zollverein was:', options: ['A German cultural union', 'A Prussian customs union', 'A French alliance', 'An Austrian military group'], answer: 1, explanation: 'The Zollverein (1834) was a customs union formed by Prussia that eliminated tariff barriers between German states, facilitating economic integration and eventual political unification.' },
+          { q: 'Which type of soil is best suited for cotton cultivation?', options: ['Alluvial soil', 'Laterite soil', 'Black (Regur) soil', 'Red soil'], answer: 2, explanation: 'Black soil (regur/cotton soil) retains moisture well and is rich in calcium, magnesium, and iron — ideal for cotton growing in the Deccan region.' },
+          { q: 'GDP stands for:', options: ['Gross Domestic Product', 'General Domestic Production', 'Government Development Plan', 'Gross Development Progress'], answer: 0, explanation: 'GDP = Gross Domestic Product. It is the total monetary value of all goods and services produced within a country in a given year.' },
+          { q: 'In Belgium, which language group forms the majority?', options: ['French-speaking', 'Dutch-speaking (Flemish)', 'German-speaking', 'Equal distribution'], answer: 1, explanation: 'About 59% of Belgians speak Dutch (Flemish) in the Flanders region. The French-speaking Walloons are about 40% in the south.' },
+          { q: 'The Ho Chi Minh Trail was used during:', options: ['Vietnam War against France', 'World War II', 'Vietnam War against USA', 'Korean War'], answer: 2, explanation: 'The Ho Chi Minh Trail was a supply route used by North Vietnam and Viet Cong to supply troops and arms during the Vietnam War against the United States (1955–1975).' },
+          { q: 'Power Sharing between Centre and States is called:', options: ['Horizontal distribution', 'Vertical distribution', 'Social sharing', 'Democratic sharing'], answer: 1, explanation: 'Vertical distribution of power involves sharing between different levels of government (Union, State, Local bodies). Horizontal is among legislature, executive, and judiciary.' },
+          { q: 'Which movement used the slogan "Do or Die"?', options: ['Non-Cooperation Movement', 'Civil Disobedience Movement', 'Quit India Movement', 'Swadeshi Movement'], answer: 2, explanation: 'Gandhi gave the "Do or Die" call at the Quit India Movement on August 8, 1942, at Gowalia Tank Maidan, Mumbai.' },
+          { q: 'HDI combines which three indicators?', options: ['Income, Education, Health', 'Income, Population, Area', 'GDP, Trade, Investment', 'Education, Employment, Gender'], answer: 0, explanation: 'HDI (Human Development Index) by UNDP combines: Per Capita Income, Education (literacy, enrolment), and Health (life expectancy).' },
+          { q: 'Primary sector of the economy includes:', options: ['Manufacturing and construction', 'Banking and insurance', 'Agriculture and mining', 'IT and education'], answer: 2, explanation: 'Primary sector includes all activities where natural resources are directly extracted: agriculture, forestry, fishing, and mining.' },
+        ]
+      },
+      it: {
+        name: 'Information Technology',
+        icon: '💻',
+        questions: [
+          { q: 'Which SQL command is used to retrieve data from a database?', options: ['INSERT', 'UPDATE', 'SELECT', 'DELETE'], answer: 2, explanation: 'SELECT is used to query/retrieve data. Syntax: SELECT column_name FROM table_name WHERE condition;' },
+          { q: 'WAN stands for:', options: ['Wide Area Network', 'Wired Access Node', 'Web Area Network', 'Wireless Application Network'], answer: 0, explanation: 'WAN (Wide Area Network) covers a large geographic area, connecting multiple LANs. The Internet is the largest WAN.' },
+          { q: 'Which tag is used to create a hyperlink in HTML?', options: ['<link>', '<a>', '<href>', '<url>'], answer: 1, explanation: '<a href="url">Link Text</a> creates a hyperlink in HTML. The "href" attribute specifies the destination URL.' },
+          { q: 'The primary key in a database must be:', options: ['Numeric only', 'Unique and Not Null', 'Alphabetic only', 'Repeated in records'], answer: 1, explanation: 'A Primary Key must be: (1) Unique — no two rows can have the same value; (2) Not Null — cannot be empty. It uniquely identifies each record.' },
+          { q: 'Which CSS property is used to change text color?', options: ['font-color', 'text-color', 'color', 'foreground'], answer: 2, explanation: 'In CSS, the "color" property sets text color. Example: p { color: red; } or p { color: #ff0000; }' },
+          { q: 'Malware that disguises itself as legitimate software is called:', options: ['Virus', 'Worm', 'Trojan Horse', 'Spyware'], answer: 2, explanation: 'A Trojan Horse (or Trojan) appears to be legitimate software but contains hidden malicious code. Unlike viruses, Trojans don\'t self-replicate.' },
+          { q: 'Which protocol is used to send emails?', options: ['FTP', 'HTTP', 'SMTP', 'POP3'], answer: 2, explanation: 'SMTP (Simple Mail Transfer Protocol) is used for SENDING emails. POP3/IMAP are used for receiving/retrieving emails.' },
+          { q: 'What does LAN stand for?', options: ['Local Area Network', 'Long Area Network', 'Large Area Node', 'Logical Access Network'], answer: 0, explanation: 'LAN (Local Area Network) is a network that covers a small geographic area like a home, school, or office building.' },
+          { q: 'In HTML, the <img> tag requires which attribute to display an image?', options: ['href', 'link', 'src', 'path'], answer: 2, explanation: 'The <img> tag uses the "src" (source) attribute: <img src="image.jpg" alt="description">. The "alt" attribute provides alternate text.' },
+          { q: 'Which number system uses digits 0 and 1 only?', options: ['Decimal (Base 10)', 'Octal (Base 8)', 'Hexadecimal (Base 16)', 'Binary (Base 2)'], answer: 3, explanation: 'Binary (Base 2) uses only 0 and 1. Computers use binary internally. Example: 5 in binary = 101.' },
+        ]
+      }
+    };
+
+    // ===== QUIZ STATE =====
+    let currentSubjectKey = '';
+    let currentQuestions = [];
+    let currentIndex = 0;
+    let currentScore = 0;
+    let answered = false;
+    let userAnswers = [];
+
+    // ===== START QUIZ =====
+    function startQuiz(subjectKey) {
+      currentSubjectKey = subjectKey;
+      const data = QUIZ_DATA[subjectKey];
+      if (!data) return;
+
+      // Shuffle questions
+      currentQuestions = [...data.questions].sort(() => Math.random() - 0.5).slice(0, 10);
+      currentIndex = 0;
+      currentScore = 0;
+      answered = false;
+      userAnswers = [];
+
+      document.getElementById('subject-selection').style.display = 'none';
+      document.getElementById('results-area').style.display = 'none';
+      document.getElementById('quiz-area').style.display = 'block';
+
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      if (currentIndex >= currentQuestions.length) {
+        showResults();
+        return;
+      }
+
+      const q = currentQuestions[currentIndex];
+      answered = false;
+
+      document.getElementById('q-progress').textContent = `Question ${currentIndex + 1} of ${currentQuestions.length}`;
+      document.getElementById('q-score').textContent = `Score: ${currentScore}`;
+      document.getElementById('q-progress-bar').style.width = `${((currentIndex) / currentQuestions.length) * 100}%`;
+      document.getElementById('q-question').textContent = q.q;
+      document.getElementById('q-next-btn').disabled = true;
+      document.getElementById('q-explanation').classList.remove('show');
+
+      const labels = ['A', 'B', 'C', 'D'];
+      const optionsHTML = q.options.map((opt, i) => `
+        <button class="quiz-option" onclick="selectAnswer(${i})" id="opt-${i}">
+          <span class="option-label">${labels[i]}</span>
+          <span>${opt}</span>
+        </button>
+      `).join('');
+      document.getElementById('q-options').innerHTML = optionsHTML;
+    }
+
+    function selectAnswer(selectedIdx) {
+      if (answered) return;
+      answered = true;
+
+      const q = currentQuestions[currentIndex];
+      const correct = q.answer;
+      userAnswers.push({ q: q.q, selected: selectedIdx, correct, explanation: q.explanation, options: q.options });
+
+      const buttons = document.querySelectorAll('.quiz-option');
+      buttons.forEach(btn => btn.disabled = true);
+
+      if (selectedIdx === correct) {
+        currentScore++;
+        buttons[selectedIdx].classList.add('correct');
+        Toast.show('Correct! 🎉', 'success', 1500);
+      } else {
+        buttons[selectedIdx].classList.add('wrong');
+        buttons[correct].classList.add('correct');
+        Toast.show('Incorrect. Check the explanation!', 'error', 1500);
+      }
+
+      // Show explanation
+      const expEl = document.getElementById('q-explanation');
+      expEl.textContent = '💡 ' + q.explanation;
+      expEl.classList.add('show');
+
+      document.getElementById('q-next-btn').disabled = false;
+      document.getElementById('q-score').textContent = `Score: ${currentScore}`;
+    }
+
+    function nextQuestion() {
+      if (!answered) return;
+      currentIndex++;
+      renderQuestion();
+    }
+
+    function showResults() {
+      document.getElementById('quiz-area').style.display = 'none';
+      document.getElementById('results-area').style.display = 'block';
+      document.getElementById('q-progress-bar').style.width = '100%';
+
+      const total = currentQuestions.length;
+      const pct = Math.round((currentScore / total) * 100);
+
+      document.getElementById('result-score').textContent = currentScore;
+      document.getElementById('result-total').textContent = `/ ${total}`;
+
+      let title, subtitle, color;
+      if (pct >= 90) { title = 'Excellent! 🏆'; subtitle = 'Outstanding performance! You\'re Board-ready!'; color = 'var(--success)'; }
+      else if (pct >= 70) { title = 'Great Job! 🌟'; subtitle = 'Good score! Review the wrong answers and you\'ll ace it.'; color = 'var(--primary)'; }
+      else if (pct >= 50) { title = 'Keep Going! 💪'; subtitle = 'Average score. Focus on weak areas and retry.'; color = 'var(--warning)'; }
+      else { title = 'Needs Work! 📚'; subtitle = 'Review your notes carefully and try again.'; color = 'var(--danger)'; }
+
+      document.getElementById('result-title').textContent = title;
+      document.getElementById('result-subtitle').textContent = subtitle;
+      document.getElementById('result-circle').style.background = `linear-gradient(135deg, ${color}, ${color}aa)`;
+
+      // Save to history
+      const history = JSON.parse(localStorage.getItem('bm_quiz_history') || '[]');
+      history.unshift({
+        subject: QUIZ_DATA[currentSubjectKey].name,
+        icon: QUIZ_DATA[currentSubjectKey].icon,
+        score: currentScore,
+        total,
+        date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: '2-digit' })
+      });
+      localStorage.setItem('bm_quiz_history', JSON.stringify(history.slice(0, 20)));
+
+      // Render review
+      const reviewHTML = userAnswers.map((ans, i) => `
+        <div class="review-item ${ans.selected === ans.correct ? 'correct' : 'wrong'}">
+          <div class="review-q">${i + 1}. ${ans.q}</div>
+          <div class="review-a">
+            ${ans.selected !== ans.correct ? `<span style="color:var(--danger);">✗ Your answer: ${ans.options[ans.selected]}</span><br>` : ''}
+            <span style="color:var(--success);">✓ Correct: ${ans.options[ans.correct]}</span><br>
+            <span style="color:var(--text-secondary);font-size:12px;">💡 ${ans.explanation}</span>
+          </div>
+        </div>
+      `).join('');
+      document.getElementById('review-list').innerHTML = reviewHTML;
+
+      renderHistory();
+    }
+
+    function retryQuiz() {
+      startQuiz(currentSubjectKey);
+    }
+
+    function goBack() {
+      document.getElementById('quiz-area').style.display = 'none';
+      document.getElementById('results-area').style.display = 'none';
+      document.getElementById('subject-selection').style.display = 'block';
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const history = JSON.parse(localStorage.getItem('bm_quiz_history') || '[]');
+      const section = document.getElementById('score-history-section');
+      if (history.length === 0) {
+        document.getElementById('history-content').innerHTML = '<p style="color:var(--text-muted);font-size:14px;">Complete a quiz to see your score history here.</p>';
+        return;
+      }
+      const html = `<div class="history-grid">${history.slice(0, 10).map(h => `
+        <div class="history-card">
+          <div class="history-subject">${h.icon} ${h.subject}</div>
+          <div class="history-score">${h.score}/${h.total} <span style="font-size:13px;color:var(--text-muted);">(${Math.round(h.score/h.total*100)}%)</span></div>
+          <div class="history-date">📅 ${h.date}</div>
+        </div>
+      `).join('')}</div>
+      <button onclick="clearHistory()" class="btn btn-ghost btn-sm" style="margin-top:12px;color:var(--danger);">🗑️ Clear History</button>`;
+      document.getElementById('history-content').innerHTML = html;
+    }
+
+    function clearHistory() {
+      if (!confirm('Clear all quiz history?')) return;
+      localStorage.removeItem('bm_quiz_history');
+      renderHistory();
+      Toast.show('Quiz history cleared', 'info');
+    }
+
+    // ===== KEYBOARD =====
+    document.addEventListener('keydown', e => {
+      const keyMap = { 'a': 0, 'b': 1, 'c': 2, 'd': 3, 'A': 0, 'B': 1, 'C': 2, 'D': 3 };
+      if (document.getElementById('quiz-area').style.display !== 'none') {
+        if (keyMap[e.key] !== undefined && !answered) {
+          selectAnswer(keyMap[e.key]);
+        }
+        if (e.key === 'Enter' && answered) {
+          nextQuestion();
+        }
+      }
+    });
+
+    // ===== INIT =====
+    renderHistory();
+  </script>
+</body>
+</html>

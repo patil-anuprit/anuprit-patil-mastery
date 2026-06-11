@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Anuprit Patil — Board Mastery</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .values-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-top: 40px; }
+    .value-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; text-align: center; transition: var(--transition); }
+    .value-card:hover { box-shadow: var(--shadow); transform: translateY(-3px); }
+    .value-icon { font-size: 36px; margin-bottom: 12px; }
+    .value-title { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+    .value-desc { font-size: 14px; color: var(--text-secondary); }
+    .contact-success { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); border-radius: var(--radius); padding: 20px; text-align: center; display: none; }
+  </style>
+</head>
+<body>
+  <div id="page-loader"><div class="loader-logo">AP</div><div style="color:rgba(255,255,255,0.6);font-size:14px;">Loading...</div><div class="loader-bar"><div class="loader-bar-fill"></div></div></div>
+  <div class="toast-container"></div>
+
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-brand">
+        <div class="nav-logo">AP</div>
+        <div><div class="nav-brand-text">Board Mastery</div><div class="nav-brand-sub">by Anuprit Patil</div></div>
+      </a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="planner.html" class="nav-link">Planner</a>
+        <a href="notes.html" class="nav-link">Notes Hub</a>
+        <a href="quiz.html" class="nav-link">Quiz Zone</a>
+        <a href="about.html" class="nav-link">About</a>
+      </div>
+      <div class="nav-actions">
+        <button class="theme-toggle">🌙</button>
+        <a href="planner.html" class="nav-link nav-cta">Start Studying →</a>
+      </div>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="index.html" class="nav-link">🏠 Home</a>
+    <a href="planner.html" class="nav-link">📅 Study Planner</a>
+    <a href="notes.html" class="nav-link">📚 Notes Hub</a>
+    <a href="quiz.html" class="nav-link">🎯 Quiz Zone</a>
+    <a href="about.html" class="nav-link">👤 About Anuprit</a>
+    <button class="theme-toggle" style="width:100%;border-radius:8px;height:44px;margin-top:8px;">Toggle Theme</button>
+  </div>
+
+  <main>
+    <!-- ABOUT HERO -->
+    <section class="about-hero">
+      <div class="hero-grid"></div>
+      <div class="hero-orb hero-orb-1"></div>
+      <div class="hero-orb hero-orb-2"></div>
+      <div style="position:relative;z-index:1;">
+        <div class="about-avatar">AP</div>
+        <h1 class="about-name">Anuprit Patil</h1>
+        <p class="about-title">Class 10 Student · Creator of Board Mastery · Aspiring Innovator</p>
+        <div class="about-tags">
+          <span class="about-tag">📚 CBSE Class 10</span>
+          <span class="about-tag">💻 Coding Enthusiast</span>
+          <span class="about-tag">🎯 Goal-Oriented</span>
+          <span class="about-tag">🏆 Academic Excellence</span>
+          <span class="about-tag">🚀 Student Innovator</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- INTRODUCTION -->
+    <section class="section">
+      <div class="container-sm">
+        <div class="reveal">
+          <div class="section-badge">👋 Introduction</div>
+          <h2 class="section-title">Meet the Creator</h2>
+          <p style="font-size:17px;color:var(--text-secondary);line-height:1.8;margin-bottom:20px;">
+            Hello! I'm <strong style="color:var(--text);">Anuprit Patil</strong>, a Class 10 CBSE student with a deep passion for both academics and technology. I believe that the way students prepare for their Board examinations needs to be completely reimagined — away from passive reading and towards active, data-driven, goal-oriented study.
+          </p>
+          <p style="font-size:17px;color:var(--text-secondary);line-height:1.8;margin-bottom:20px;">
+            Board Mastery was born from my personal frustration with existing study tools. Most platforms are cluttered, distraction-heavy, or too generic to be genuinely useful for CBSE preparation. I wanted something <em>premium</em> — a platform that respects a student's time and intelligence.
+          </p>
+          <p style="font-size:17px;color:var(--text-secondary);line-height:1.8;">
+            This project represents everything I believe in: <strong style="color:var(--text);">discipline, focus, creativity, and the relentless pursuit of excellence.</strong> I built every feature, wrote every line of code, and researched every note to give my fellow students the best possible study companion.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- VALUES -->
+    <section class="section" style="background:var(--bg-secondary);">
+      <div class="container-sm">
+        <div style="text-align:center;margin-bottom:40px;" class="reveal">
+          <div class="section-badge">⭐ Core Values</div>
+          <h2 class="section-title">What Drives Me</h2>
+        </div>
+        <div class="values-grid">
+          <div class="value-card reveal delay-1">
+            <div class="value-icon">🎯</div>
+            <div class="value-title">Discipline</div>
+            <div class="value-desc">Showing up every day, even when motivation fades. Consistency builds champions.</div>
+          </div>
+          <div class="value-card reveal delay-2">
+            <div class="value-icon">💡</div>
+            <div class="value-title">Innovation</div>
+            <div class="value-desc">Finding better, smarter ways to solve problems — in academics and in life.</div>
+          </div>
+          <div class="value-card reveal delay-3">
+            <div class="value-icon">🌱</div>
+            <div class="value-title">Growth Mindset</div>
+            <div class="value-desc">Every mistake is a lesson. Every setback is a setup for a stronger comeback.</div>
+          </div>
+          <div class="value-card reveal delay-4">
+            <div class="value-icon">🤝</div>
+            <div class="value-title">Helping Others</div>
+            <div class="value-desc">Sharing knowledge freely. When we uplift each other, everyone rises higher.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- JOURNEY / VISION TIMELINE -->
+    <section class="section">
+      <div class="container-sm">
+        <div class="reveal" style="margin-bottom:40px;">
+          <div class="section-badge">🗺️ Vision & Journey</div>
+          <h2 class="section-title">Why I Built Board Mastery</h2>
+        </div>
+        <div class="timeline reveal delay-1">
+          <div class="timeline-item">
+            <div class="timeline-dot">💭</div>
+            <div class="timeline-content">
+              <div class="timeline-title">The Problem I Saw</div>
+              <div class="timeline-text">Fellow students were struggling with scattered notes, no study structure, and anxiety about board exams. Most study apps were either too simple or too expensive. There was a gap: a free, professional-grade tool built specifically for CBSE Class 10.</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot">🔬</div>
+            <div class="timeline-content">
+              <div class="timeline-title">The Research Phase</div>
+              <div class="timeline-text">I spent weeks studying CBSE syllabi across all 5 subjects, learning about effective study techniques like spaced repetition, active recall, and the Pomodoro technique. I wanted every feature to be backed by science, not just gut feeling.</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot">⚒️</div>
+            <div class="timeline-content">
+              <div class="timeline-title">Building the Platform</div>
+              <div class="timeline-text">I taught myself web development — HTML, CSS, and JavaScript — and applied what I learned to build a fully functional platform. Every quiz question, every note, every formula was personally researched and written. This isn't just a website; it's my best work.</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot">🚀</div>
+            <div class="timeline-content">
+              <div class="timeline-title">Launching Board Mastery</div>
+              <div class="timeline-text">Board Mastery launched as a complete platform with a Study Planner, Notes Hub, Quiz Zone, and Achievement system. My goal is for every CBSE Class 10 student to walk into their board exams prepared, confident, and proud.</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot">🔮</div>
+            <div class="timeline-content">
+              <div class="timeline-title">Future Goals</div>
+              <div class="timeline-text">I plan to expand Board Mastery to Class 11 and 12, add AI-powered personalized study plans, connect with a community of students, and eventually build one of India's most impactful edtech platforms. This is just the beginning.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ACHIEVEMENT BADGES SECTION -->
+    <section class="section" style="background:var(--bg-secondary);" id="badges">
+      <div class="container-sm">
+        <div style="text-align:center;margin-bottom:40px;" class="reveal">
+          <div class="section-badge">🏆 Achievements</div>
+          <h2 class="section-title">Your Achievement Badges</h2>
+          <p style="color:var(--text-muted);font-size:14px;">Earn badges by using Board Mastery. Your progress is tracked automatically.</p>
+        </div>
+        <div class="badges-grid reveal" id="badges-grid"></div>
+      </div>
+    </section>
+
+    <!-- BOARD READINESS DASHBOARD -->
+    <section class="section">
+      <div class="container-sm">
+        <div class="reveal" style="margin-bottom:32px;">
+          <div class="section-badge">📊 Dashboard</div>
+          <h2 class="section-title">Your Progress Dashboard</h2>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px;" class="reveal delay-2">
+          <div class="card" style="text-align:center;">
+            <div style="font-size:40px;font-weight:900;color:var(--primary);" id="dash-tasks">0</div>
+            <div style="font-size:13px;color:var(--text-muted);">Tasks Created</div>
+          </div>
+          <div class="card" style="text-align:center;">
+            <div style="font-size:40px;font-weight:900;color:var(--success);" id="dash-done">0</div>
+            <div style="font-size:13px;color:var(--text-muted);">Tasks Completed</div>
+          </div>
+          <div class="card" style="text-align:center;">
+            <div style="font-size:40px;font-weight:900;color:var(--accent);" id="dash-streak">0</div>
+            <div style="font-size:13px;color:var(--text-muted);">Day Streak 🔥</div>
+          </div>
+          <div class="card" style="text-align:center;">
+            <div style="font-size:40px;font-weight:900;color:var(--danger);" id="dash-quizzes">0</div>
+            <div style="font-size:13px;color:var(--text-muted);">Quizzes Taken</div>
+          </div>
+          <div class="card" style="text-align:center;">
+            <div style="font-size:40px;font-weight:900;color:var(--info);" id="dash-readiness">0</div>
+            <div style="font-size:13px;color:var(--text-muted);">Readiness Score</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="section" style="background:var(--bg-secondary);" id="contact">
+      <div class="container-sm">
+        <div style="text-align:center;margin-bottom:40px;" class="reveal">
+          <div class="section-badge">💬 Contact</div>
+          <h2 class="section-title">Get in Touch</h2>
+          <p style="color:var(--text-secondary);font-size:16px;">Have feedback, suggestions, or want to collaborate? I'd love to hear from you.</p>
+        </div>
+        <div class="contact-form reveal delay-2">
+          <div id="contact-success" class="contact-success">
+            <div style="font-size:36px;margin-bottom:8px;">✅</div>
+            <div style="font-size:18px;font-weight:700;color:var(--success);margin-bottom:4px;">Message Saved!</div>
+            <div style="font-size:14px;color:var(--text-muted);">Thank you for reaching out. Your message has been saved locally.</div>
+          </div>
+          <div id="contact-form-wrap">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+              <div class="form-group">
+                <label class="form-label">Your Name *</label>
+                <input type="text" id="contact-name" class="form-input" placeholder="Riya Sharma">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input type="email" id="contact-email" class="form-input" placeholder="riya@example.com">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Subject *</label>
+              <select id="contact-subject" class="form-select">
+                <option value="">Select a subject...</option>
+                <option value="feedback">💬 General Feedback</option>
+                <option value="bug">🐛 Report a Bug</option>
+                <option value="suggestion">💡 Feature Suggestion</option>
+                <option value="notes">📚 Notes Correction</option>
+                <option value="quiz">🎯 Quiz Question Issue</option>
+                <option value="collaboration">🤝 Collaboration</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Message *</label>
+              <textarea id="contact-message" class="form-textarea" placeholder="Write your message here..." rows="5"></textarea>
+            </div>
+            <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+              <button onclick="submitContact()" class="btn btn-primary">Send Message →</button>
+              <span style="font-size:13px;color:var(--text-muted);">Messages are saved locally on your device.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Saved messages (debug) -->
+        <div id="saved-messages-section" style="margin-top:40px;display:none;">
+          <h3 style="font-size:16px;font-weight:700;margin-bottom:16px;">📬 Saved Messages</h3>
+          <div id="saved-messages-list"></div>
+          <button onclick="clearMessages()" class="btn btn-ghost btn-sm" style="color:var(--danger);margin-top:8px;">🗑️ Clear All Messages</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- MOTIVATIONAL CLOSING -->
+    <section class="quote-section" id="quote-closing">
+      <div style="position:relative;z-index:1;padding:0 20px;">
+        <div class="section-badge" style="color:rgba(255,255,255,0.7);border-color:rgba(255,255,255,0.15);background:rgba(255,255,255,0.1);margin-bottom:24px;">✨ A Message from Anuprit</div>
+        <p class="quote-text" style="font-style:normal;">"I built Board Mastery because I believe every student deserves premium tools to prepare for their most important exams. No matter your background, you have the potential to excel. Use this platform, stay consistent, and trust the process. Your hardest days are creating your strongest version."</p>
+        <p class="quote-author" style="color:rgba(255,255,255,0.6);font-style:normal;margin-top:12px;">— Anuprit Patil, Creator of Board Mastery</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <div class="footer-logo-icon">AP</div>
+          <div class="footer-logo-text">Anuprit Patil's<br>Board Mastery</div>
+        </div>
+        <p class="footer-desc">The most professional Class 10 CBSE student platform. Study smart, track progress, and master your board exams with purpose and discipline.</p>
+        <div style="display:flex;gap:8px;">
+          <span class="badge badge-primary">CBSE Class 10</span>
+          <span class="badge badge-success">Free Forever</span>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Pages</div>
+        <a href="index.html" class="footer-link">Home</a>
+        <a href="planner.html" class="footer-link">Study Planner</a>
+        <a href="notes.html" class="footer-link">Notes Hub</a>
+        <a href="quiz.html" class="footer-link">Quiz Zone</a>
+        <a href="about.html" class="footer-link">About Anuprit</a>
+      </div>
+      <div>
+        <div class="footer-col-title">Subjects</div>
+        <a href="notes.html?subject=maths" class="footer-link">Mathematics</a>
+        <a href="notes.html?subject=science" class="footer-link">Science</a>
+        <a href="notes.html?subject=english" class="footer-link">English</a>
+        <a href="notes.html?subject=sst" class="footer-link">Social Science</a>
+        <a href="notes.html?subject=it" class="footer-link">Info. Technology</a>
+      </div>
+      <div>
+        <div class="footer-col-title">Connect</div>
+        <a href="#contact" class="footer-link">📬 Send Message</a>
+        <a href="#badges" class="footer-link">🏆 Achievements</a>
+        <a href="planner.html" class="footer-link">📅 Start Planning</a>
+        <a href="quiz.html" class="footer-link">🎯 Take a Quiz</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>Built with dedication by <a href="about.html">Anuprit Patil</a> · Class 10 CBSE 2027</div>
+      <div>Plan Smart · Study Deep · Master Boards</div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    // ===== BADGES DATA =====
+    const BADGES = [
+      { id: 'first_task', icon: '📌', name: 'First Task', desc: 'Added your first study task', check: () => JSON.parse(localStorage.getItem('bm_tasks') || '[]').length >= 1 },
+      { id: 'task_master', icon: '✅', name: 'Task Master', desc: 'Completed 10 tasks', check: () => JSON.parse(localStorage.getItem('bm_tasks') || '[]').filter(t => t.completed).length >= 10 },
+      { id: 'first_quiz', icon: '🎯', name: 'Quiz Starter', desc: 'Completed your first quiz', check: () => JSON.parse(localStorage.getItem('bm_quiz_history') || '[]').length >= 1 },
+      { id: 'quiz_ace', icon: '🏅', name: 'Quiz Ace', desc: 'Scored 9+ in any quiz', check: () => JSON.parse(localStorage.getItem('bm_quiz_history') || '[]').some(h => h.score >= 9) },
+      { id: 'perfect_score', icon: '💯', name: 'Perfect Score', desc: 'Got 10/10 in any quiz', check: () => JSON.parse(localStorage.getItem('bm_quiz_history') || '[]').some(h => h.score === 10) },
+      { id: 'streak_3', icon: '🔥', name: 'On Fire', desc: 'Maintained 3-day streak', check: () => parseInt(localStorage.getItem('bm_streak') || '0') >= 3 },
+      { id: 'streak_7', icon: '⚡', name: 'Week Warrior', desc: 'Maintained 7-day streak', check: () => parseInt(localStorage.getItem('bm_streak') || '0') >= 7 },
+      { id: 'multi_subject', icon: '📚', name: 'All-Rounder', desc: 'Took quizzes in 3+ subjects', check: () => { const h = JSON.parse(localStorage.getItem('bm_quiz_history') || '[]'); const subjects = new Set(h.map(x => x.subject)); return subjects.size >= 3; } },
+      { id: 'planner_pro', icon: '📅', name: 'Planner Pro', desc: 'Created 20+ tasks', check: () => JSON.parse(localStorage.getItem('bm_tasks') || '[]').length >= 20 },
+      { id: 'science_star', icon: '🔬', name: 'Science Star', desc: 'Scored 8+ in Science quiz', check: () => JSON.parse(localStorage.getItem('bm_quiz_history') || '[]').some(h => h.subject === 'Science' && h.score >= 8) },
+      { id: 'maths_wizard', icon: '📐', name: 'Maths Wizard', desc: 'Scored 8+ in Maths quiz', check: () => JSON.parse(localStorage.getItem('bm_quiz_history') || '[]').some(h => h.subject === 'Mathematics' && h.score >= 8) },
+      { id: 'board_ready', icon: '🏆', name: 'Board Ready', desc: 'Readiness score above 60%', check: () => getBoardReadiness() >= 60 },
+      { id: 'dedicated', icon: '🌟', name: 'Dedicated Scholar', desc: 'Used Board Mastery for 5+ days', check: () => parseInt(localStorage.getItem('bm_streak') || '0') >= 5 },
+      { id: 'quiz_veteran', icon: '🎖️', name: 'Quiz Veteran', desc: 'Completed 10+ quizzes', check: () => JSON.parse(localStorage.getItem('bm_quiz_history') || '[]').length >= 10 },
+      { id: 'english_scholar', icon: '📝', name: 'English Scholar', desc: 'Scored 8+ in English quiz', check: () => JSON.parse(localStorage.getItem('bm_quiz_history') || '[]').some(h => h.subject === 'English' && h.score >= 8) },
+    ];
+
+    function renderBadges() {
+      const grid = document.getElementById('badges-grid');
+      const unlockedIds = JSON.parse(localStorage.getItem('bm_badges') || '[]');
+
+      // Check for newly unlocked badges
+      const newlyUnlocked = [];
+      BADGES.forEach(badge => {
+        if (!unlockedIds.includes(badge.id) && badge.check()) {
+          unlockedIds.push(badge.id);
+          newlyUnlocked.push(badge.name);
+        }
+      });
+      if (newlyUnlocked.length > 0) {
+        localStorage.setItem('bm_badges', JSON.stringify(unlockedIds));
+        newlyUnlocked.forEach(name => Toast.show(`🏆 Badge Unlocked: ${name}!`, 'success', 4000));
+      }
+
+      grid.innerHTML = BADGES.map(badge => {
+        const unlocked = unlockedIds.includes(badge.id);
+        return `
+          <div class="achievement-badge ${unlocked ? '' : 'locked'}" title="${unlocked ? badge.desc : 'Locked — ' + badge.desc}">
+            ${unlocked ? '<div class="badge-unlocked">✓</div>' : ''}
+            <div class="badge-icon">${badge.icon}</div>
+            <div class="badge-name">${badge.name}</div>
+            <div class="badge-desc">${badge.desc}</div>
+            ${!unlocked ? '<div style="font-size:18px;margin-top:4px;">🔒</div>' : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ===== DASHBOARD =====
+    function renderDashboard() {
+      const tasks = JSON.parse(localStorage.getItem('bm_tasks') || '[]');
+      const quizHistory = JSON.parse(localStorage.getItem('bm_quiz_history') || '[]');
+
+      document.getElementById('dash-tasks').textContent = tasks.length;
+      document.getElementById('dash-done').textContent = tasks.filter(t => t.completed).length;
+      document.getElementById('dash-streak').textContent = Streak.get();
+      document.getElementById('dash-quizzes').textContent = quizHistory.length;
+      document.getElementById('dash-readiness').textContent = getBoardReadiness() + '%';
+    }
+
+    // ===== CONTACT =====
+    function submitContact() {
+      const name = document.getElementById('contact-name').value.trim();
+      const email = document.getElementById('contact-email').value.trim();
+      const subject = document.getElementById('contact-subject').value;
+      const message = document.getElementById('contact-message').value.trim();
+
+      if (!name) { Toast.show('Please enter your name', 'error'); return; }
+      if (!subject) { Toast.show('Please select a subject', 'error'); return; }
+      if (!message) { Toast.show('Please write a message', 'error'); return; }
+
+      const messages = JSON.parse(localStorage.getItem('bm_contact_messages') || '[]');
+      messages.push({ name, email, subject, message, date: new Date().toLocaleString() });
+      localStorage.setItem('bm_contact_messages', JSON.stringify(messages));
+
+      document.getElementById('contact-form-wrap').style.display = 'none';
+      document.getElementById('contact-success').style.display = 'block';
+      Toast.show('Message saved successfully! 📬', 'success');
+
+      setTimeout(() => {
+        document.getElementById('contact-form-wrap').style.display = 'block';
+        document.getElementById('contact-success').style.display = 'none';
+        document.getElementById('contact-name').value = '';
+        document.getElementById('contact-email').value = '';
+        document.getElementById('contact-subject').value = '';
+        document.getElementById('contact-message').value = '';
+      }, 4000);
+
+      renderSavedMessages();
+    }
+
+    function renderSavedMessages() {
+      const messages = JSON.parse(localStorage.getItem('bm_contact_messages') || '[]');
+      const section = document.getElementById('saved-messages-section');
+      if (messages.length === 0) { section.style.display = 'none'; return; }
+      section.style.display = 'block';
+      document.getElementById('saved-messages-list').innerHTML = messages.map(m => `
+        <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:8px;">
+          <div style="font-size:14px;font-weight:600;">${m.name} — ${m.subject}</div>
+          <div style="font-size:13px;color:var(--text-muted);">${m.message}</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">${m.date}</div>
+        </div>
+      `).join('');
+    }
+
+    function clearMessages() {
+      localStorage.removeItem('bm_contact_messages');
+      document.getElementById('saved-messages-section').style.display = 'none';
+      Toast.show('Messages cleared', 'info');
+    }
+
+    // ===== INIT =====
+    renderBadges();
+    renderDashboard();
+    renderSavedMessages();
+  </script>
+</body>
+</html>

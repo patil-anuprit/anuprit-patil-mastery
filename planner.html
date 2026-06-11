@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study Planner — Board Mastery by Anuprit Patil</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .planner-header-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+    .mini-stat { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; text-align: center; }
+    .mini-stat-num { font-size: 28px; font-weight: 800; color: var(--primary); }
+    .mini-stat-label { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .progress-section { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 24px; }
+    .prog-label { display: flex; justify-content: space-between; font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+    .prog-bar { height: 10px; background: var(--bg-secondary); border-radius: 999px; overflow: hidden; margin-bottom: 16px; }
+    .prog-fill { height: 100%; border-radius: 999px; background: var(--grad-primary); transition: width 0.5s ease; }
+    .week-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+    .day-cell {
+      aspect-ratio: 1; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700;
+      background: var(--bg-secondary); color: var(--text-muted);
+      border: 1px solid var(--border);
+      flex-direction: column; gap: 2px;
+    }
+    .day-cell.today { border-color: var(--primary); color: var(--primary); }
+    .day-cell.has-tasks { background: rgba(79,70,229,0.1); border-color: var(--primary); color: var(--primary); }
+    .day-cell.all-done { background: rgba(16,185,129,0.1); border-color: var(--success); color: var(--success); }
+    .day-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+    .empty-state { text-align: center; padding: 60px 20px; }
+    .empty-icon { font-size: 56px; margin-bottom: 16px; }
+    .empty-title { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .empty-desc { font-size: 15px; color: var(--text-secondary); }
+    @media (max-width: 768px) {
+      .planner-header-stats { grid-template-columns: repeat(2, 1fr); }
+      .planner-layout { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div id="page-loader"><div class="loader-logo">AP</div><div style="color:rgba(255,255,255,0.6);font-size:14px;">Loading Planner...</div><div class="loader-bar"><div class="loader-bar-fill"></div></div></div>
+  <div class="toast-container"></div>
+
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-brand">
+        <div class="nav-logo">AP</div>
+        <div><div class="nav-brand-text">Board Mastery</div><div class="nav-brand-sub">by Anuprit Patil</div></div>
+      </a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="planner.html" class="nav-link">Planner</a>
+        <a href="notes.html" class="nav-link">Notes Hub</a>
+        <a href="quiz.html" class="nav-link">Quiz Zone</a>
+        <a href="about.html" class="nav-link">About</a>
+      </div>
+      <div class="nav-actions">
+        <button class="theme-toggle">🌙</button>
+        <a href="planner.html" class="nav-link nav-cta">Start Studying →</a>
+      </div>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="index.html" class="nav-link">🏠 Home</a>
+    <a href="planner.html" class="nav-link">📅 Study Planner</a>
+    <a href="notes.html" class="nav-link">📚 Notes Hub</a>
+    <a href="quiz.html" class="nav-link">🎯 Quiz Zone</a>
+    <a href="about.html" class="nav-link">👤 About Anuprit</a>
+    <button class="theme-toggle" style="width:100%;border-radius:8px;height:44px;margin-top:8px;">Toggle Theme</button>
+  </div>
+
+  <main>
+    <div class="page-header">
+      <div class="container">
+        <div class="page-header-badge">📅 Study Planner</div>
+        <h1 class="page-header-title">Your Personal Study Command Center</h1>
+        <p class="page-header-subtitle">Plan tasks, track progress, maintain your streak, and dominate your Board preparation.</p>
+      </div>
+    </div>
+
+    <section class="section-sm">
+      <div class="container">
+        <!-- Stats Row -->
+        <div class="planner-header-stats">
+          <div class="mini-stat">
+            <div class="mini-stat-num" id="stat-total">0</div>
+            <div class="mini-stat-label">Total Tasks</div>
+          </div>
+          <div class="mini-stat">
+            <div class="mini-stat-num" id="stat-done" style="color:var(--success)">0</div>
+            <div class="mini-stat-label">Completed</div>
+          </div>
+          <div class="mini-stat">
+            <div class="mini-stat-num" id="stat-pending" style="color:var(--warning)">0</div>
+            <div class="mini-stat-label">Pending</div>
+          </div>
+          <div class="mini-stat">
+            <div class="mini-stat-num" id="stat-streak" style="color:var(--accent)">0</div>
+            <div class="mini-stat-label">Day Streak 🔥</div>
+          </div>
+        </div>
+
+        <div class="planner-layout" style="display:grid;grid-template-columns:280px 1fr;gap:24px;">
+          <!-- SIDEBAR -->
+          <div>
+            <!-- Streak Card -->
+            <div class="planner-sidebar-card" style="padding:0;overflow:hidden;">
+              <div class="streak-display">
+                <div class="streak-num" id="streak-num">0</div>
+                <div class="streak-label">🔥 Day Study Streak</div>
+                <div style="font-size:12px;opacity:0.7;margin-top:6px;" id="streak-msg">Start your streak today!</div>
+              </div>
+              <div style="padding:16px;">
+                <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px;">This Week</div>
+                <div class="week-grid" id="week-grid"></div>
+              </div>
+            </div>
+
+            <!-- Progress -->
+            <div class="progress-section">
+              <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:16px;">📊 Overall Progress</div>
+              <div class="prog-label"><span>Tasks Completed</span><span id="prog-pct">0%</span></div>
+              <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+              <div style="font-size:12px;color:var(--text-muted);">Complete tasks to increase your Board Readiness Score</div>
+            </div>
+
+            <!-- Daily Goals -->
+            <div class="planner-sidebar-card">
+              <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:16px;">🎯 Daily Goals</div>
+              <div id="goals-list">
+                <!-- goals rendered here -->
+              </div>
+              <div style="display:flex;gap:8px;margin-top:12px;">
+                <input type="text" id="new-goal-input" placeholder="Add a daily goal..." class="form-input" style="font-size:13px;padding:8px 12px;">
+                <button onclick="addGoal()" class="btn btn-primary btn-sm">+</button>
+              </div>
+            </div>
+
+            <!-- Weekly Goals -->
+            <div class="planner-sidebar-card">
+              <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:16px;">📆 Weekly Goals</div>
+              <div id="weekly-goals-list"></div>
+              <div style="display:flex;gap:8px;margin-top:12px;">
+                <input type="text" id="new-weekly-goal-input" placeholder="Add weekly goal..." class="form-input" style="font-size:13px;padding:8px 12px;">
+                <button onclick="addWeeklyGoal()" class="btn btn-sm" style="background:var(--grad-accent);color:#fff;">+</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- MAIN AREA -->
+          <div>
+            <!-- Add Task Header -->
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+              <h2 style="font-size:20px;font-weight:700;color:var(--text);">📋 My Tasks</h2>
+              <button onclick="openModal('add-task-modal')" class="btn btn-primary">+ Add New Task</button>
+            </div>
+
+            <!-- Filters -->
+            <div class="task-filters">
+              <button class="filter-btn active" data-filter="all" onclick="filterTasks('all',this)">All</button>
+              <button class="filter-btn" data-filter="pending" onclick="filterTasks('pending',this)">Pending</button>
+              <button class="filter-btn" data-filter="completed" onclick="filterTasks('completed',this)">Completed</button>
+              <button class="filter-btn" data-filter="high" onclick="filterTasks('high',this)">🔴 High Priority</button>
+              <button class="filter-btn" data-filter="medium" onclick="filterTasks('medium',this)">🟡 Medium</button>
+              <button class="filter-btn" data-filter="low" onclick="filterTasks('low',this)">🟢 Low</button>
+            </div>
+
+            <!-- Sort -->
+            <div style="display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">
+              <span style="font-size:13px;color:var(--text-muted);">Sort by:</span>
+              <select id="sort-select" class="form-select" style="width:auto;padding:6px 12px;font-size:13px;" onchange="renderTasks()">
+                <option value="date">Date Added</option>
+                <option value="priority">Priority</option>
+                <option value="due">Due Date</option>
+                <option value="subject">Subject</option>
+              </select>
+              <button onclick="clearCompleted()" class="btn btn-sm btn-ghost" style="margin-left:auto;">Clear Completed</button>
+            </div>
+
+            <!-- Task List -->
+            <div id="task-list"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ADD/EDIT TASK MODAL -->
+  <div class="modal-overlay" id="add-task-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="task-modal-title">➕ Add New Task</h3>
+        <button class="modal-close" onclick="closeModal('add-task-modal')">✕</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Task Title *</label>
+        <input type="text" id="task-title-input" class="form-input" placeholder="e.g. Complete Chapter 3 – Polynomials">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div class="form-group">
+          <label class="form-label">Subject</label>
+          <select id="task-subject-input" class="form-select">
+            <option value="Mathematics">Mathematics</option>
+            <option value="Science">Science</option>
+            <option value="English">English</option>
+            <option value="Social Science">Social Science</option>
+            <option value="IT">Information Technology</option>
+            <option value="General">General</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Priority</label>
+          <select id="task-priority-input" class="form-select">
+            <option value="high">🔴 High</option>
+            <option value="medium" selected>🟡 Medium</option>
+            <option value="low">🟢 Low</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Due Date</label>
+        <input type="date" id="task-due-input" class="form-input">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes (optional)</label>
+        <textarea id="task-notes-input" class="form-textarea" placeholder="Any additional notes about this task..." rows="3"></textarea>
+      </div>
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px;">
+        <button onclick="closeModal('add-task-modal')" class="btn btn-secondary btn-sm">Cancel</button>
+        <button onclick="saveTask()" class="btn btn-primary">Save Task</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-bottom" style="max-width:1200px;margin:0 auto;border-top:none;padding:24px 0 0;">
+      <div>Built with dedication by <a href="about.html">Anuprit Patil</a> · Board Mastery</div>
+      <div><a href="index.html">Home</a> · <a href="notes.html">Notes</a> · <a href="quiz.html">Quiz</a></div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    // ===== PLANNER STATE =====
+    let tasks = JSON.parse(localStorage.getItem('bm_tasks') || '[]');
+    let goals = JSON.parse(localStorage.getItem('bm_goals') || '[]');
+    let weeklyGoals = JSON.parse(localStorage.getItem('bm_weekly_goals') || '[]');
+    let editingTaskId = null;
+    let currentFilter = 'all';
+
+    // Default goals if empty
+    if (goals.length === 0) {
+      goals = [
+        { id: 1, text: 'Study for 2 hours', done: false },
+        { id: 2, text: 'Complete one practice quiz', done: false },
+        { id: 3, text: 'Review yesterday\'s notes', done: false }
+      ];
+      saveGoals();
+    }
+    if (weeklyGoals.length === 0) {
+      weeklyGoals = [
+        { id: 1, text: 'Finish Maths Chapter 1-3 revision', done: false },
+        { id: 2, text: 'Complete Science practicals notes', done: false }
+      ];
+      saveWeeklyGoals();
+    }
+
+    function saveData() {
+      localStorage.setItem('bm_tasks', JSON.stringify(tasks));
+    }
+    function saveGoals() {
+      localStorage.setItem('bm_goals', JSON.stringify(goals));
+    }
+    function saveWeeklyGoals() {
+      localStorage.setItem('bm_weekly_goals', JSON.stringify(weeklyGoals));
+    }
+
+    // ===== RENDER STATS =====
+    function renderStats() {
+      const total = tasks.length;
+      const done = tasks.filter(t => t.completed).length;
+      const pending = total - done;
+      const streak = Streak.get();
+
+      document.getElementById('stat-total').textContent = total;
+      document.getElementById('stat-done').textContent = done;
+      document.getElementById('stat-pending').textContent = pending;
+      document.getElementById('stat-streak').textContent = streak;
+      document.getElementById('streak-num').textContent = streak;
+
+      const msgs = ['Start your streak today!', 'Keep it up!', '2 days strong! 🌱', '3 in a row! 💪', '4 days — amazing!', '5 days! You\'re on fire! 🔥', 'One week warrior! ⚡'];
+      document.getElementById('streak-msg').textContent = streak < msgs.length ? msgs[streak] : `${streak} days — LEGENDARY! 🏆`;
+
+      const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+      document.getElementById('prog-pct').textContent = pct + '%';
+      document.getElementById('prog-fill').style.width = pct + '%';
+    }
+
+    // ===== WEEK GRID =====
+    function renderWeekGrid() {
+      const grid = document.getElementById('week-grid');
+      const days = ['S','M','T','W','T','F','S'];
+      const today = new Date();
+      const dayOfWeek = today.getDay();
+      const todayStr = today.toDateString();
+
+      // Get start of week (Sunday)
+      const weekStart = new Date(today);
+      weekStart.setDate(today.getDate() - dayOfWeek);
+
+      grid.innerHTML = '';
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(weekStart);
+        d.setDate(weekStart.getDate() + i);
+        const dStr = d.toDateString();
+        const dayTasks = tasks.filter(t => {
+          if (t.due) return new Date(t.due).toDateString() === dStr;
+          return false;
+        });
+        const allDone = dayTasks.length > 0 && dayTasks.every(t => t.completed);
+        const cell = document.createElement('div');
+        cell.className = 'day-cell' + (dStr === todayStr ? ' today' : '') + (dayTasks.length > 0 && !allDone ? ' has-tasks' : '') + (allDone ? ' all-done' : '');
+        cell.innerHTML = `<span>${days[i]}</span><span style="font-size:9px;">${d.getDate()}</span>${dayTasks.length > 0 ? '<div class="day-dot"></div>' : ''}`;
+        grid.appendChild(cell);
+      }
+    }
+
+    // ===== RENDER TASKS =====
+    function renderTasks() {
+      const list = document.getElementById('task-list');
+      const sortBy = document.getElementById('sort-select').value;
+      let filtered = [...tasks];
+
+      if (currentFilter === 'pending') filtered = filtered.filter(t => !t.completed);
+      else if (currentFilter === 'completed') filtered = filtered.filter(t => t.completed);
+      else if (['high','medium','low'].includes(currentFilter)) filtered = filtered.filter(t => t.priority === currentFilter);
+
+      // Sort
+      if (sortBy === 'priority') {
+        const order = { high: 0, medium: 1, low: 2 };
+        filtered.sort((a, b) => (order[a.priority] || 1) - (order[b.priority] || 1));
+      } else if (sortBy === 'due') {
+        filtered.sort((a, b) => {
+          if (!a.due) return 1; if (!b.due) return -1;
+          return new Date(a.due) - new Date(b.due);
+        });
+      } else if (sortBy === 'subject') {
+        filtered.sort((a, b) => a.subject.localeCompare(b.subject));
+      } else {
+        filtered.sort((a, b) => b.id - a.id);
+      }
+
+      if (filtered.length === 0) {
+        list.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">No tasks here</div><div class="empty-desc">${currentFilter === 'all' ? 'Click "Add New Task" to create your first study task.' : 'No tasks match this filter.'}</div></div>`;
+        return;
+      }
+
+      const subjectIcons = { Mathematics: '📐', Science: '🔬', English: '📝', 'Social Science': '🌍', IT: '💻', General: '📌' };
+
+      list.innerHTML = filtered.map(task => {
+        const icon = subjectIcons[task.subject] || '📌';
+        const dueStr = task.due ? new Date(task.due).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : '';
+        const isOverdue = task.due && !task.completed && new Date(task.due) < new Date();
+        return `
+          <div class="task-item ${task.completed ? 'completed' : ''}" data-id="${task.id}">
+            <div class="task-check ${task.completed ? 'checked' : ''}" onclick="toggleTask(${task.id})">
+              ${task.completed ? '✓' : ''}
+            </div>
+            <div class="task-content">
+              <div class="task-title">${task.title}</div>
+              <div class="task-meta">
+                <span class="task-priority priority-${task.priority}">${task.priority}</span>
+                <span class="task-subject">${icon} ${task.subject}</span>
+                ${dueStr ? `<span class="task-due" style="${isOverdue ? 'color:var(--danger);' : ''}">📅 ${dueStr}${isOverdue ? ' (overdue)' : ''}</span>` : ''}
+              </div>
+              ${task.notes ? `<div style="font-size:13px;color:var(--text-muted);margin-top:4px;">${task.notes}</div>` : ''}
+            </div>
+            <div class="task-actions">
+              <button class="task-btn" onclick="editTask(${task.id})" title="Edit">✏️</button>
+              <button class="task-btn del" onclick="deleteTask(${task.id})" title="Delete">🗑️</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ===== ADD / EDIT TASK =====
+    function openAddModal() {
+      editingTaskId = null;
+      document.getElementById('task-modal-title').textContent = '➕ Add New Task';
+      document.getElementById('task-title-input').value = '';
+      document.getElementById('task-subject-input').value = 'Mathematics';
+      document.getElementById('task-priority-input').value = 'medium';
+      document.getElementById('task-due-input').value = '';
+      document.getElementById('task-notes-input').value = '';
+      openModal('add-task-modal');
+    }
+
+    function saveTask() {
+      const title = document.getElementById('task-title-input').value.trim();
+      if (!title) { Toast.show('Please enter a task title', 'error'); return; }
+
+      const taskData = {
+        title,
+        subject: document.getElementById('task-subject-input').value,
+        priority: document.getElementById('task-priority-input').value,
+        due: document.getElementById('task-due-input').value,
+        notes: document.getElementById('task-notes-input').value.trim(),
+        completed: false
+      };
+
+      if (editingTaskId !== null) {
+        const idx = tasks.findIndex(t => t.id === editingTaskId);
+        if (idx !== -1) {
+          tasks[idx] = { ...tasks[idx], ...taskData };
+          Toast.show('Task updated successfully!', 'success');
+        }
+        editingTaskId = null;
+      } else {
+        taskData.id = Date.now();
+        tasks.unshift(taskData);
+        Toast.show('Task added successfully!', 'success');
+      }
+
+      saveData();
+      closeModal('add-task-modal');
+      renderAll();
+    }
+
+    function editTask(id) {
+      const task = tasks.find(t => t.id === id);
+      if (!task) return;
+      editingTaskId = id;
+      document.getElementById('task-modal-title').textContent = '✏️ Edit Task';
+      document.getElementById('task-title-input').value = task.title;
+      document.getElementById('task-subject-input').value = task.subject;
+      document.getElementById('task-priority-input').value = task.priority;
+      document.getElementById('task-due-input').value = task.due || '';
+      document.getElementById('task-notes-input').value = task.notes || '';
+      openModal('add-task-modal');
+    }
+
+    function deleteTask(id) {
+      if (!confirm('Delete this task?')) return;
+      tasks = tasks.filter(t => t.id !== id);
+      saveData();
+      renderAll();
+      Toast.show('Task deleted', 'info');
+    }
+
+    function toggleTask(id) {
+      const task = tasks.find(t => t.id === id);
+      if (!task) return;
+      task.completed = !task.completed;
+      saveData();
+      renderAll();
+      if (task.completed) Toast.show('Task completed! 🎉', 'success');
+    }
+
+    function filterTasks(filter, btn) {
+      currentFilter = filter;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderTasks();
+    }
+
+    function clearCompleted() {
+      const count = tasks.filter(t => t.completed).length;
+      if (count === 0) { Toast.show('No completed tasks to clear', 'info'); return; }
+      if (!confirm(`Remove ${count} completed task(s)?`)) return;
+      tasks = tasks.filter(t => !t.completed);
+      saveData();
+      renderAll();
+      Toast.show(`${count} completed tasks cleared`, 'success');
+    }
+
+    // ===== GOALS =====
+    function renderGoals() {
+      const list = document.getElementById('goals-list');
+      if (goals.length === 0) {
+        list.innerHTML = '<div style="font-size:13px;color:var(--text-muted);">No daily goals yet. Add one below!</div>';
+        return;
+      }
+      list.innerHTML = goals.map(g => `
+        <div class="goal-item">
+          <input type="checkbox" ${g.done ? 'checked' : ''} onchange="toggleGoal(${g.id})">
+          <span class="goal-label ${g.done ? 'done' : ''}">${g.text}</span>
+          <button onclick="removeGoal(${g.id})" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:14px;" title="Remove">✕</button>
+        </div>
+      `).join('');
+    }
+
+    function addGoal() {
+      const input = document.getElementById('new-goal-input');
+      const text = input.value.trim();
+      if (!text) return;
+      goals.push({ id: Date.now(), text, done: false });
+      saveGoals();
+      renderGoals();
+      input.value = '';
+      Toast.show('Daily goal added!', 'success');
+    }
+
+    function toggleGoal(id) {
+      const g = goals.find(g => g.id === id);
+      if (g) { g.done = !g.done; saveGoals(); renderGoals(); }
+    }
+
+    function removeGoal(id) {
+      goals = goals.filter(g => g.id !== id);
+      saveGoals();
+      renderGoals();
+    }
+
+    function renderWeeklyGoals() {
+      const list = document.getElementById('weekly-goals-list');
+      if (weeklyGoals.length === 0) {
+        list.innerHTML = '<div style="font-size:13px;color:var(--text-muted);">No weekly goals yet.</div>';
+        return;
+      }
+      list.innerHTML = weeklyGoals.map(g => `
+        <div class="goal-item">
+          <input type="checkbox" ${g.done ? 'checked' : ''} onchange="toggleWeeklyGoal(${g.id})">
+          <span class="goal-label ${g.done ? 'done' : ''}">${g.text}</span>
+          <button onclick="removeWeeklyGoal(${g.id})" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:14px;">✕</button>
+        </div>
+      `).join('');
+    }
+
+    function addWeeklyGoal() {
+      const input = document.getElementById('new-weekly-goal-input');
+      const text = input.value.trim();
+      if (!text) return;
+      weeklyGoals.push({ id: Date.now(), text, done: false });
+      saveWeeklyGoals();
+      renderWeeklyGoals();
+      input.value = '';
+      Toast.show('Weekly goal added!', 'success');
+    }
+
+    function toggleWeeklyGoal(id) {
+      const g = weeklyGoals.find(g => g.id === id);
+      if (g) { g.done = !g.done; saveWeeklyGoals(); renderWeeklyGoals(); }
+    }
+
+    function removeWeeklyGoal(id) {
+      weeklyGoals = weeklyGoals.filter(g => g.id !== id);
+      saveWeeklyGoals();
+      renderWeeklyGoals();
+    }
+
+    function renderAll() {
+      renderStats();
+      renderTasks();
+      renderWeekGrid();
+      renderGoals();
+      renderWeeklyGoals();
+    }
+
+    // ===== KEYBOARD ===
+    document.getElementById('new-goal-input').addEventListener('keypress', e => { if (e.key === 'Enter') addGoal(); });
+    document.getElementById('new-weekly-goal-input').addEventListener('keypress', e => { if (e.key === 'Enter') addWeeklyGoal(); });
+    document.getElementById('task-title-input').addEventListener('keypress', e => { if (e.key === 'Enter') saveTask(); });
+
+    // ===== INIT =====
+    renderAll();
+  </script>
+</body>
+</html>

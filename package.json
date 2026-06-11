@@ -1,0 +1,9 @@
+{
+  "name": "board-mastery",
+  "version": "1.0.0",
+  "description": "Anuprit Patil's Board Mastery — Premium CBSE Class 10 Educational Platform",
+  "private": true,
+  "scripts": {
+    "start": "npx serve ."
+  }
+}
