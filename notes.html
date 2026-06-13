@@ -1,3 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notes Hub — Board Mastery by Anuprit Patil</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .notes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .highlight-box {
+      background: rgba(79,70,229,0.06); border: 1px solid rgba(79,70,229,0.15);
+      border-radius: var(--radius); padding: 12px 16px; margin: 8px 0;
+      font-size: 14px; color: var(--text);
+    }
+    .highlight-box .formula { color: var(--primary); font-family: 'Courier New', monospace; font-weight: 700; }
+    .def-term { font-weight: 700; color: var(--text); }
+    .def-body { color: var(--text-secondary); }
+    .chapter-badge { padding: 3px 10px; background: rgba(79,70,229,0.1); color: var(--primary); border-radius: 999px; font-size: 11px; font-weight: 700; }
+    .no-results { text-align: center; padding: 60px 20px; }
+    @media (max-width: 768px) { .notes-layout { grid-template-columns: 1fr !important; } }
+  </style>
+</head>
+<body>
+  <div id="page-loader"><div class="loader-logo">AP</div><div style="color:rgba(255,255,255,0.6);font-size:14px;">Loading Notes...</div><div class="loader-bar"><div class="loader-bar-fill"></div></div></div>
+  <div class="toast-container"></div>
+
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-brand">
+        <div class="nav-logo">AP</div>
+        <div><div class="nav-brand-text">Board Mastery</div><div class="nav-brand-sub">by Anuprit Patil</div></div>
+      </a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="planner.html" class="nav-link">Planner</a>
+        <a href="notes.html" class="nav-link">Notes Hub</a>
+        <a href="quiz.html" class="nav-link">Quiz Zone</a>
+        <a href="about.html" class="nav-link">About</a>
+      </div>
+      <div class="nav-actions">
+        <button class="theme-toggle">🌙</button>
+        <a href="planner.html" class="nav-link nav-cta">Start Studying →</a>
+      </div>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="index.html" class="nav-link">🏠 Home</a>
+    <a href="planner.html" class="nav-link">📅 Study Planner</a>
+    <a href="notes.html" class="nav-link">📚 Notes Hub</a>
+    <a href="quiz.html" class="nav-link">🎯 Quiz Zone</a>
+    <a href="about.html" class="nav-link">👤 About Anuprit</a>
+    <button class="theme-toggle" style="width:100%;border-radius:8px;height:44px;margin-top:8px;">Toggle Theme</button>
+  </div>
+
+  <main>
+    <div class="page-header">
+      <div class="container">
+        <div class="page-header-badge">📚 Notes Hub</div>
+        <h1 class="page-header-title">Complete Revision Notes</h1>
+        <p class="page-header-subtitle">Formulas, definitions, and key concepts for all 5 CBSE Class 10 subjects — organized, searchable, and exam-ready.</p>
+      </div>
+    </div>
+
+    <section class="section-sm">
+      <div class="container">
+        <!-- Search -->
+        <div class="notes-search" style="margin-bottom:24px;">
+          <input type="text" id="notes-search-input" placeholder="🔍 Search notes, formulas, definitions..." oninput="searchNotes(this.value)">
+          <button onclick="clearSearch()" class="btn btn-secondary btn-sm">Clear</button>
+        </div>
+
+        <div class="notes-layout" style="display:grid;grid-template-columns:220px 1fr;gap:24px;">
+          <!-- Sidebar -->
+          <div>
+            <div style="margin-bottom:8px;font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;padding:0 4px;">Subjects</div>
+            <button class="subject-btn active" onclick="selectSubject('maths',this)" id="btn-maths">📐 Mathematics</button>
+            <button class="subject-btn" onclick="selectSubject('science',this)" id="btn-science">🔬 Science</button>
+            <button class="subject-btn" onclick="selectSubject('english',this)" id="btn-english">📝 English</button>
+            <button class="subject-btn" onclick="selectSubject('sst',this)" id="btn-sst">🌍 Social Science</button>
+            <button class="subject-btn" onclick="selectSubject('it',this)" id="btn-it">💻 Info. Technology</button>
+
+            <div style="margin-top:24px;padding:16px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);">
+              <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px;">💡 Study Tip</div>
+              <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;" id="study-tip">Loading tip...</div>
+            </div>
+
+            <a href="quiz.html" style="display:block;margin-top:16px;padding:14px;background:var(--grad-primary);border-radius:var(--radius);text-align:center;color:#fff;font-size:14px;font-weight:600;transition:var(--transition);" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+              🎯 Test Yourself →
+            </a>
+          </div>
+
+          <!-- Content -->
+          <div id="notes-content">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-bottom" style="max-width:1200px;margin:0 auto;border-top:none;padding:24px 0 0;">
+      <div>Built with dedication by <a href="about.html">Anuprit Patil</a> · Board Mastery</div>
+      <div><a href="index.html">Home</a> · <a href="planner.html">Planner</a> · <a href="quiz.html">Quiz</a></div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    // ===== NOTES DATA =====
+    const NOTES_DATA = {
+      maths: {
+        name: 'Mathematics',
+        icon: '📐',
+        color: '#4f46e5',
+        sections: [
+          {
+            title: '📏 Real Numbers',
+            notes: [
+              { title: 'Euclid\'s Division Lemma', type: 'formula', content: 'For any two positive integers a and b, there exist unique integers q and r such that: a = bq + r, where 0 ≤ r < b', tag: 'Ch 1' },
+              { title: 'Fundamental Theorem of Arithmetic', type: 'definition', content: 'Every composite number can be expressed (factorised) as a product of primes, and this factorisation is unique, apart from the order in which the prime factors occur.', tag: 'Ch 1' },
+              { title: 'HCF using Prime Factorisation', type: 'formula', content: 'HCF(a, b) = Product of the smallest power of each common prime factor.', tag: 'Ch 1' },
+              { title: 'LCM using Prime Factorisation', type: 'formula', content: 'LCM(a, b) = Product of the greatest power of each prime factor involved.', tag: 'Ch 1' },
+              { title: 'HCF × LCM Relation', type: 'formula', content: 'HCF(a, b) × LCM(a, b) = a × b', tag: 'Ch 1' },
+              { title: 'Irrational Numbers', type: 'definition', content: 'Numbers that cannot be expressed as p/q form (where p, q are integers and q≠0). Examples: √2, √3, π, e. Proof: Assume √2 = p/q (coprime), then 2 = p²/q² → p² = 2q² → p is even → p=2k → 4k² = 2q² → q² = 2k² → q is even. Contradiction!', tag: 'Ch 1' },
+            ]
+          },
+          {
+            title: '🔢 Polynomials',
+            notes: [
+              { title: 'Relationship between Zeros and Coefficients — Quadratic', type: 'formula', content: 'For p(x) = ax² + bx + c with zeros α and β:\n• Sum of zeros: α + β = −b/a\n• Product of zeros: αβ = c/a', tag: 'Ch 2' },
+              { title: 'Relationship — Cubic Polynomial', type: 'formula', content: 'For p(x) = ax³ + bx² + cx + d with zeros α, β, γ:\n• α+β+γ = −b/a\n• αβ+βγ+γα = c/a\n• αβγ = −d/a', tag: 'Ch 2' },
+              { title: 'Degree of a Polynomial', type: 'definition', content: 'The degree is the highest power of the variable. A polynomial of degree 1 is linear, degree 2 is quadratic, degree 3 is cubic. A quadratic polynomial can have at most 2 zeros.', tag: 'Ch 2' },
+              { title: 'Division Algorithm for Polynomials', type: 'formula', content: 'p(x) = g(x) × q(x) + r(x)\nwhere degree(r(x)) < degree(g(x)) or r(x) = 0', tag: 'Ch 2' },
+            ]
+          },
+          {
+            title: '📊 Pair of Linear Equations',
+            notes: [
+              { title: 'Graphical Method Results', type: 'definition', content: '• Intersecting lines → Unique solution (consistent)\n• Coincident lines → Infinite solutions (consistent, dependent)\n• Parallel lines → No solution (inconsistent)', tag: 'Ch 3' },
+              { title: 'Consistency Conditions', type: 'formula', content: 'a₁/a₂ ≠ b₁/b₂ → Unique solution\na₁/a₂ = b₁/b₂ = c₁/c₂ → Infinite solutions\na₁/a₂ = b₁/b₂ ≠ c₁/c₂ → No solution', tag: 'Ch 3' },
+              { title: 'Substitution Method', type: 'definition', content: 'Express one variable in terms of the other from one equation, then substitute in the second equation to find both variables.', tag: 'Ch 3' },
+              { title: 'Cross-Multiplication Method', type: 'formula', content: 'x/(b₁c₂−b₂c₁) = y/(c₁a₂−c₂a₁) = 1/(a₁b₂−a₂b₁)', tag: 'Ch 3' },
+            ]
+          },
+          {
+            title: '📐 Quadratic Equations',
+            notes: [
+              { title: 'Quadratic Formula', type: 'formula', content: 'x = [−b ± √(b²−4ac)] / 2a\nfor ax² + bx + c = 0', tag: 'Ch 4' },
+              { title: 'Discriminant (D)', type: 'formula', content: 'D = b² − 4ac\n• D > 0 → Two distinct real roots\n• D = 0 → Two equal real roots (x = −b/2a)\n• D < 0 → No real roots', tag: 'Ch 4' },
+              { title: 'Factorisation Method', type: 'definition', content: 'Split the middle term: find two numbers whose product = ac and sum = b. Then factor by grouping.', tag: 'Ch 4' },
+            ]
+          },
+          {
+            title: '🔄 Arithmetic Progressions',
+            notes: [
+              { title: 'General Term (nth Term)', type: 'formula', content: 'aₙ = a + (n−1)d\nwhere a = first term, d = common difference', tag: 'Ch 5' },
+              { title: 'Sum of First n Terms', type: 'formula', content: 'Sₙ = n/2 × [2a + (n−1)d]\nOR Sₙ = n/2 × (a + l) where l = last term', tag: 'Ch 5' },
+              { title: 'Common Difference', type: 'formula', content: 'd = a₂ − a₁ = a₃ − a₂ = ... (constant throughout)', tag: 'Ch 5' },
+            ]
+          },
+          {
+            title: '📐 Triangles',
+            notes: [
+              { title: 'Basic Proportionality Theorem (Thales)', type: 'formula', content: 'If a line is drawn parallel to one side of a triangle, it divides the other two sides proportionally.\nDE ∥ BC → AD/DB = AE/EC', tag: 'Ch 6' },
+              { title: 'AA Similarity Criterion', type: 'definition', content: 'If two angles of one triangle are equal to two angles of another triangle, then the triangles are similar (AA ~ AA).', tag: 'Ch 6' },
+              { title: 'Ratio of Areas of Similar Triangles', type: 'formula', content: 'ar(△ABC)/ar(△PQR) = (AB/PQ)² = (BC/QR)² = (AC/PR)²', tag: 'Ch 6' },
+              { title: 'Pythagoras Theorem', type: 'formula', content: 'In a right-angled triangle, (hypotenuse)² = (base)² + (perpendicular)²\nAC² = AB² + BC² (where AC is hypotenuse)', tag: 'Ch 6' },
+            ]
+          },
+          {
+            title: '📏 Coordinate Geometry',
+            notes: [
               { title: 'Distance Formula', type: 'formula', content: 'd = √[(x₂−x₁)² + (y₂−y₁)²]', tag: 'Ch 7' },
               { title: 'Section Formula (Internal Division)', type: 'formula', content: 'P(x, y) = [(mx₂+nx₁)/(m+n), (my₂+ny₁)/(m+n)]', tag: 'Ch 7' },
               { title: 'Midpoint Formula', type: 'formula', content: 'M = [(x₁+x₂)/2, (y₁+y₂)/2]', tag: 'Ch 7' },
@@ -220,629 +394,50 @@
           }
         ]
       },
-    it: {
-  name: 'Information Technology (CBSE 417)',
-  icon: '💻',
-  color: '#8b5cf6',
-  sections: [
-
-    {
-      title: '📢 Communication Skills-II',
-      notes: [
-
-        {
-          title: '🌟 Communication',
-          type: 'definition',
-          content: 'Communication is the process of exchanging information, ideas, thoughts, feelings and messages between two or more people for mutual understanding.',
-          tag: 'Part A'
-        },
-
-        {
-          title: '🎯 Objectives of Communication',
-          type: 'definition',
-          content: 'To inform, educate, motivate, influence, persuade, build relationships and ensure effective understanding.',
-          tag: 'Part A'
-        },
-
-        {
-          title: '🔄 Communication Cycle',
-          type: 'definition',
-          content: 'Sender → Idea → Encoding → Message → Channel → Receiver → Decoding → Feedback',
-          tag: 'Part A'
-        },
-
-        {
-          title: '🗣 Verbal Communication',
-          type: 'definition',
-          content: 'Communication using spoken or written words. Examples: conversation, speech, email, report, letter.',
-          tag: 'Part A'
-        },
-
-        {
-          title: '😊 Non-Verbal Communication',
-          type: 'definition',
-          content: 'Communication through facial expressions, gestures, posture, eye contact, body language and appearance.',
-          tag: 'Part A'
-        },
-
-        {
-          title: '📄 Written Communication',
-          type: 'definition',
-          content: 'Communication through written words such as notices, reports, letters, emails and messages.',
-          tag: 'Part A'
-        },
-
-        {
-          title: '📊 Visual Communication',
-          type: 'definition',
-          content: 'Communication using charts, graphs, symbols, signs, posters and presentations.',
-          tag: 'Part A'
-        },
-
-        {
-          title: '🏆 7 Cs of Communication',
-          type: 'definition',
-          content: 'Clear, Concise, Concrete, Correct, Coherent, Complete and Courteous.',
-          tag: 'Part A'
-        },
-
-        {
-          title: '🚧 Barriers to Communication',
-          type: 'definition',
-          content: 'Physical Barriers, Linguistic Barriers, Emotional Barriers, Cultural Barriers and Organisational Barriers.',
-          tag: 'Part A'
-        },
-
-        {
-          title: '💡 Overcoming Communication Barriers',
-          type: 'definition',
-          content: 'Use simple language, listen carefully, ask questions, provide feedback, maintain eye contact and avoid distractions.',
-          tag: 'Part A'
-        },
-
-        {
-          title: '👂 Active Listening',
-          type: 'definition',
-          content: 'Active listening means giving complete attention to the speaker, understanding the message and responding appropriately.',
-          tag: 'Part A'
-        },
-
-        {
-          title: '📚 Importance of Active Listening',
-          type: 'definition',
-          content: 'Improves understanding, reduces misunderstandings, builds trust and improves relationships.',
-          tag: 'Part A'
-        },
-
-        {
-          title: '🤝 Feedback',
-          type: 'definition',
-          content: 'Feedback is the response given by the receiver to indicate whether the message has been understood correctly.',
-          tag: 'Part A'
-        },
-
-        {
-          title: '⚡ Types of Feedback',
-          type: 'definition',
-          content: 'Positive Feedback, Negative Feedback, Constructive Feedback and Instant Feedback.',
-          tag: 'Part A'
-        },
-
-        {
-          title: '🌍 Communication in Workplace',
-          type: 'definition',
-          content: 'Good communication increases productivity, teamwork, professionalism and customer satisfaction.',
-          tag: 'Part A'
-        },
-
-        {
-          title: '🎤 Public Speaking Tips',
-          type: 'definition',
-          content: 'Maintain eye contact, speak clearly, use correct posture, avoid fillers, know your topic and practise regularly.',
-          tag: 'Part A'
-        },
-
-        {
-          title: '📝 Important Exam Questions',
-          type: 'definition',
-          content: 'Define communication. Explain communication cycle. What are barriers to communication? Explain 7 Cs of communication. Define active listening.',
-          tag: 'Part A'
-        },
-
-        {
-          title: '🔥 Board Revision Capsule',
-          type: 'definition',
-          content: 'Communication = Exchange of Information. Remember Communication Cycle, 7 Cs, Active Listening and Communication Barriers.',
-          tag: 'Part A'
-  
-  }
-  ]
-  },
-    
-{
-  title: '💻 Basic ICT Skills-II',
-  notes: [
-
-    {
-      title: '🌟 Information and Communication Technology',
-      type: 'definition',
-      content: 'ICT stands for Information and Communication Technology. It includes computers, software, internet, communication devices and digital technologies used to create, store, process and share information.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '🎯 Importance of ICT',
-      type: 'definition',
-      content: 'ICT improves communication, education, business, healthcare, banking, government services and entertainment. It increases efficiency and saves time.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '🖥️ Computer System',
-      type: 'definition',
-      content: 'A computer system consists of hardware, software, data, procedures and users working together to process information.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '⚙️ Hardware',
-      type: 'definition',
-      content: 'Hardware refers to physical components of a computer such as monitor, keyboard, mouse, CPU, printer and scanner.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '📦 Software',
-      type: 'definition',
-      content: 'Software is a collection of programs and instructions that tell a computer what to do.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '🧩 Types of Software',
-      type: 'definition',
-      content: 'System Software: Operating System, Drivers. Application Software: MS Word, Calc, Impress, Browser, Games.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '🖱️ Input Devices',
-      type: 'definition',
-      content: 'Keyboard, Mouse, Scanner, Microphone, Webcam, Barcode Reader, Joystick, Light Pen and Touch Screen.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '🖨️ Output Devices',
-      type: 'definition',
-      content: 'Monitor, Printer, Speaker, Projector, Plotter and Headphones.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '🧠 CPU',
-      type: 'definition',
-      content: 'CPU (Central Processing Unit) is called the brain of the computer. It performs calculations, logical operations and controls all computer activities.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '💾 Memory Units',
-      type: 'definition',
-      content: 'Bit → Nibble → Byte → KB → MB → GB → TB → PB',
-      tag: 'Part A'
-    },
-
-    {
-      title: '⚡ Primary Memory',
-      type: 'definition',
-      content: 'Primary memory includes RAM and ROM. It is directly accessible by CPU.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '🚀 RAM',
-      type: 'definition',
-      content: 'Random Access Memory is temporary memory. Data is lost when power is turned off. Faster than secondary storage.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '🔒 ROM',
-      type: 'definition',
-      content: 'Read Only Memory stores permanent instructions required for booting the computer.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '💽 Secondary Storage',
-      type: 'definition',
-      content: 'Hard Disk, SSD, Pen Drive, CD, DVD and Memory Card are secondary storage devices used for permanent data storage.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '🪟 Operating System',
-      type: 'definition',
-      content: 'An Operating System manages hardware, software and system resources. Examples: Windows, Linux, Android, macOS.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '📂 File Management',
-      type: 'definition',
-      content: 'File management includes creating, renaming, copying, moving, deleting and organizing files and folders.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '⌨️ Important Keyboard Shortcuts',
-      type: 'formula',
-      content: 'Ctrl+C Copy | Ctrl+V Paste | Ctrl+X Cut | Ctrl+Z Undo | Ctrl+Y Redo | Ctrl+A Select All | Ctrl+S Save | Ctrl+P Print',
-      tag: 'Part A'
-    },
-
-    {
-      title: '🌐 Internet',
-      type: 'definition',
-      content: 'Internet is a worldwide network connecting millions of computers for communication and information sharing.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '🔍 Web Browser',
-      type: 'definition',
-      content: 'A browser is software used to access websites. Examples: Chrome, Firefox, Edge, Safari.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '📧 Email',
-      type: 'definition',
-      content: 'Email is electronic mail used for sending and receiving digital messages over the internet.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '☁️ Cloud Computing',
-      type: 'definition',
-      content: 'Cloud Computing provides storage and services through the internet. Examples: Google Drive, OneDrive and Dropbox.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '🔐 Cyber Safety',
-      type: 'definition',
-      content: 'Cyber Safety means protecting devices, personal information and online accounts from digital threats.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '🦠 Malware',
-      type: 'definition',
-      content: 'Malware is harmful software such as Virus, Worm, Trojan, Spyware and Ransomware.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '🎣 Phishing',
-      type: 'definition',
-      content: 'Phishing is a cyber attack where fake emails or websites are used to steal passwords and personal information.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '🛡️ Strong Password Rules',
-      type: 'definition',
-      content: 'Use at least 8 characters, uppercase letters, lowercase letters, numbers and special symbols.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '📚 Important Definitions',
-      type: 'definition',
-      content: 'Hardware, Software, RAM, ROM, CPU, Internet, Browser, Email, Malware and Cloud Computing are frequently asked definitions.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '🎤 Viva Questions',
-      type: 'definition',
-      content: '1. What is ICT?\n2. What is RAM?\n3. Difference between RAM and ROM?\n4. What is an Operating System?\n5. What is Cloud Computing?\n6. What is Malware?',
-      tag: 'Part A'
-    },
-
-    {
-      title: '📝 Board Questions',
-      type: 'definition',
-      content: 'Explain ICT. Differentiate Hardware and Software. Explain Primary and Secondary Memory. Describe Cyber Safety Measures.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '⚡ One-Day Revision',
-      type: 'definition',
-      content: 'Remember CPU, RAM, ROM, Input Devices, Output Devices, Operating System, Internet, Browser, Email, Cloud Computing and Cyber Safety.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '🏆 Topper Tip',
-      type: 'definition',
-      content: 'Most students lose marks in RAM vs ROM differences and memory unit conversions. Revise them regularly.',
-      tag: 'Part A'
-    }
-
-  ]    
-  },
-    
-  {
-  title: '🚀 Entrepreneurial Skills-II',
-  notes: [
-
-    {
-      title: '🌟 Entrepreneur',
-      type: 'definition',
-      content: 'An entrepreneur is a person who identifies opportunities, takes risks and starts a business to earn profit and create value.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '🚀 Entrepreneurship',
-      type: 'definition',
-      content: 'Entrepreneurship is the process of creating, developing and managing a business venture while taking financial risks.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '🎯 Importance of Entrepreneurship',
-      type: 'definition',
-      content: 'Creates employment, boosts economic growth, promotes innovation, improves living standards and supports national development.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '💡 Qualities of a Successful Entrepreneur',
-      type: 'definition',
-      content: 'Leadership, confidence, creativity, innovation, risk-taking ability, decision-making skills, communication skills and problem-solving ability.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '🏢 Types of Entrepreneurs',
-      type: 'definition',
-      content: 'Business Entrepreneur, Social Entrepreneur, Women Entrepreneur, Rural Entrepreneur and Technology Entrepreneur.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '📈 Entrepreneurship vs Employment',
-      type: 'definition',
-      content: 'Entrepreneur creates jobs and takes risks. Employee works for an organization and receives salary.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '🧠 Innovation',
-      type: 'definition',
-      content: 'Innovation means introducing new ideas, methods, products or services that improve existing systems.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '⚠ Business Risks',
-      type: 'definition',
-      content: 'Financial risk, market risk, competition risk, technology risk and management risk.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '💰 Sources of Finance',
-      type: 'definition',
-      content: 'Personal savings, bank loans, investors, venture capital and government schemes.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '🏆 Advantages of Entrepreneurship',
-      type: 'definition',
-      content: 'Financial independence, personal satisfaction, leadership opportunities, wealth creation and innovation.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '📚 Entrepreneurial Competencies',
-      type: 'definition',
-      content: 'Initiative, persistence, commitment, efficiency, goal setting, information seeking and self-confidence.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '🌍 Role in Society',
-      type: 'definition',
-      content: 'Entrepreneurs solve problems, create products, provide services and contribute to national development.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '🎤 Viva Questions',
-      type: 'definition',
-      content: 'Who is an entrepreneur? What is entrepreneurship? State qualities of a successful entrepreneur. What are business risks?',
-      tag: 'Part A'
-    },
-
-    {
-      title: '📝 Board Questions',
-      type: 'definition',
-      content: 'Explain entrepreneurship. Differentiate entrepreneur and employee. Explain entrepreneurial competencies.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '⚡ Quick Revision',
-      type: 'definition',
-      content: 'Entrepreneur = Opportunity + Innovation + Risk + Profit + Leadership.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '🏅 Topper Note',
-      type: 'definition',
-      content: 'Remember entrepreneurial qualities and competencies. These are frequently asked in CBSE exams.',
-      tag: 'Part A'
-    }
-
-  ]
-  },
-{
-  title: '🌱 Green Skills-II',
-  notes: [
-
-    {
-      title: '🌍 Sustainable Development',
-      type: 'definition',
-      content: 'Sustainable development means meeting present needs without compromising the ability of future generations to meet their own needs. It balances economic growth, social welfare and environmental protection.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '♻ What is Green Economy?',
-      type: 'definition',
-      content: 'A green economy improves human well-being while reducing environmental risks. It focuses on low carbon emissions, efficient resource use and social inclusion.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '🌿 Importance of Green Skills',
-      type: 'definition',
-      content: 'Green skills help individuals conserve resources, reduce pollution, promote sustainability and contribute towards environmental protection.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '⚡ Renewable Resources',
-      type: 'definition',
-      content: 'Resources that can be replenished naturally in a short period of time. Examples: Solar Energy, Wind Energy, Hydropower, Biomass and Geothermal Energy.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '⛽ Non-Renewable Resources',
-      type: 'definition',
-      content: 'Resources that take millions of years to form and cannot be replaced quickly. Examples: Coal, Petroleum, Natural Gas and Minerals.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '🌞 Solar Energy',
-      type: 'definition',
-      content: 'Energy obtained from sunlight using solar panels. It is clean, renewable and environmentally friendly.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '💨 Wind Energy',
-      type: 'definition',
-      content: 'Generated using wind turbines. Wind energy is renewable, pollution-free and reduces dependence on fossil fuels.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '💧 Water Conservation',
-      type: 'definition',
-      content: 'Methods include rainwater harvesting, fixing leaks, efficient irrigation systems and reducing wastage of water.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '⚡ Energy Conservation',
-      type: 'definition',
-      content: 'Switching off unused electrical devices, using LED bulbs, energy-efficient appliances and reducing unnecessary consumption.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '🗑 Waste Management',
-      type: 'definition',
-      content: 'Collection, transportation, processing and disposal of waste in a manner that reduces environmental impact.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '♻ 3Rs Principle',
-      type: 'definition',
-      content: 'Reduce: Minimize waste generation. Reuse: Use items multiple times. Recycle: Convert waste materials into useful products.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '🌳 Importance of Trees',
-      type: 'definition',
-      content: 'Trees absorb carbon dioxide, release oxygen, prevent soil erosion, support biodiversity and improve air quality.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '🌎 Global Warming',
-      type: 'definition',
-      content: 'Increase in Earth’s average temperature due to greenhouse gases such as carbon dioxide, methane and nitrous oxide.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '🏭 Greenhouse Effect',
-      type: 'definition',
-      content: 'Process in which gases trap heat in Earth’s atmosphere. Excessive greenhouse gases lead to climate change.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '🌧 Climate Change',
-      type: 'definition',
-      content: 'Long-term changes in temperature and weather patterns caused mainly by human activities and greenhouse gas emissions.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '🚲 Eco-Friendly Habits',
-      type: 'definition',
-      content: 'Use public transport, save electricity, avoid plastic, plant trees, recycle waste and conserve water.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '🏢 Green Jobs',
-      type: 'definition',
-      content: 'Jobs that help protect the environment and support sustainable development such as solar technician, environmental engineer and waste management specialist.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '📚 Important Exam Points',
-      type: 'definition',
-      content: 'Sustainable Development, Green Economy, Renewable Resources, Non-Renewable Resources, 3Rs Principle and Climate Change are highly important CBSE topics.',
-      tag: 'Part A'
-    },
-
-    {
-      title: '📝 Frequently Asked Questions',
-      type: 'definition',
-      content: 'Define sustainable development. Explain the 3Rs. Differentiate renewable and non-renewable resources. What is global warming?',
-      tag: 'Part A'
-    },
-
-    {
-      title: '🏅 Topper Quick Revision',
-      type: 'definition',
-      content: 'Green Skills = Sustainability + Resource Conservation + Renewable Energy + Waste Management + Environmental Protection.',
-      tag: 'Part A'
-    }
-]
-}
-]
-};
-
-     const STUDY_TIPS = [
+      it: {
+        name: 'Information Technology',
+        icon: '💻',
+        color: '#8b5cf6',
+        sections: [
+          {
+            title: '🖥️ IT Tools and Business Systems',
+            notes: [
+              { title: 'Communication Life Cycle', type: 'definition', content: 'Idea → Encoding → Transmission (through channel) → Decoding → Feedback\nTypes: Verbal (spoken), Non-verbal (gestures, body language), Written (email, letter), Visual (graphs, charts)', tag: 'Unit 1' },
+              { title: 'Types of Networks', type: 'definition', content: 'LAN (Local Area Network): Small area, e.g. office, school\nMAN (Metropolitan Area Network): City-wide\nWAN (Wide Area Network): Countries, e.g. Internet\nPAN (Personal Area Network): Bluetooth devices within 10m', tag: 'Unit 1' },
+              { title: 'Network Topologies', type: 'definition', content: 'Bus: All devices on one cable | Star: All connected to central hub | Ring: Circular chain | Mesh: Every device connected to every other | Tree: Hierarchical combination of star and bus', tag: 'Unit 1' },
+              { title: 'Internet Services', type: 'definition', content: 'WWW: Web pages accessed via browser\nEmail: Electronic mail using SMTP/POP3\nFTP: File Transfer Protocol\nVoIP: Voice over Internet Protocol\nE-commerce: Online buying/selling\nCloud Computing: Services via internet (AWS, Google Cloud)', tag: 'Unit 1' },
+            ]
+          },
+          {
+            title: '🗄️ Database Management',
+            notes: [
+              { title: 'Database Concepts', type: 'definition', content: 'Database: Organized collection of related data\nDBMS: Software to manage databases (e.g. MySQL, MS Access)\nTable: Data stored in rows (records) and columns (fields)\nPrimary Key: Unique identifier for each record (no duplicates, no null)', tag: 'Unit 2' },
+              { title: 'SQL Basics', type: 'formula', content: 'SELECT column FROM table WHERE condition;\nINSERT INTO table VALUES (val1, val2);\nUPDATE table SET col=val WHERE cond;\nDELETE FROM table WHERE condition;\nCREATE TABLE name (col1 type, col2 type);', tag: 'Unit 2' },
+              { title: 'Data Types in SQL', type: 'definition', content: 'INT: whole numbers | FLOAT: decimal numbers | VARCHAR(n): variable-length text | CHAR(n): fixed-length text | DATE: date values | BOOLEAN: true/false', tag: 'Unit 2' },
+              { title: 'Constraints', type: 'definition', content: 'PRIMARY KEY: unique, not null\nFOREIGN KEY: links to primary key of another table\nNOT NULL: field cannot be empty\nUNIQUE: no duplicate values\nDEFAULT: auto-fills value if not provided\nCHECK: validates condition', tag: 'Unit 2' },
+            ]
+          },
+          {
+            title: '🌐 Web Technologies',
+            notes: [
+              { title: 'HTML Basics', type: 'formula', content: '<!DOCTYPE html> — declares document type\n<html> → <head> (metadata) + <body> (content)\nCommon tags: <h1>-<h6>, <p>, <a href>, <img src>, <ul>/<ol>/<li>, <table>, <form>, <input>', tag: 'Unit 3' },
+              { title: 'CSS Selectors', type: 'formula', content: 'Element: p { color: red; }\nClass: .myclass { }\nID: #myid { }\nDescendant: div p { }\nPseudo: a:hover { }\nBox model: content → padding → border → margin', tag: 'Unit 3' },
+              { title: 'JavaScript Basics', type: 'formula', content: 'var/let/const — declare variables\nif/else, switch — conditions\nfor, while, do-while — loops\nfunction name() { } — define functions\ndocument.getElementById() — DOM access\nalert(), console.log() — output', tag: 'Unit 3' },
+            ]
+          },
+          {
+            title: '🔒 Cyber Safety',
+            notes: [
+              { title: 'Common Cyber Threats', type: 'definition', content: 'Virus: Self-replicating malicious program\nWorm: Spreads through network without user action\nTrojan: Disguised as legitimate software\nSpyware: Monitors user activity secretly\nRansomware: Encrypts files and demands payment\nPhishing: Fake websites/emails to steal credentials', tag: 'Unit 4' },
+              { title: 'Safe Internet Practices', type: 'definition', content: '• Use strong passwords (8+ chars, mix of cases, numbers, symbols)\n• Enable 2-Factor Authentication\n• Don\'t share personal info publicly\n• Check for HTTPS before entering info\n• Regular backups\n• Keep software updated\n• Avoid pirated software and unknown links', tag: 'Unit 4' },
+              { title: 'IT Act 2000', type: 'definition', content: 'India\'s first law for e-commerce and cybercrime. Key provisions: Legal recognition of electronic records and digital signatures. Sections: 43 (unauthorized access), 66 (hacking), 67 (obscene content), 72 (breach of confidentiality), 79 (intermediary liability).', tag: 'Unit 4' },
+            ]
+          }
+        ]
+      }
+    };
+
+    const STUDY_TIPS = [
       "Use spaced repetition — review notes after 1 day, 3 days, 1 week, 1 month.",
       "Teach what you've learned to someone else — it solidifies understanding.",
       "Solve last 5 years' CBSE papers for every subject.",
@@ -932,4 +527,19 @@
       const typeLabel = note.type === 'formula' ? '📐 Formula' : '📖 Definition';
       const typeColor = note.type === 'formula' ? '#4f46e5' : '#10b981';
 
-      return `<div class="note-card" style="border-left: 3px solid ${color};
+      return `<div class="note-card" style="border-left: 3px solid ${color};">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;gap:8px;flex-wrap:wrap;">
+          <h4>${note.title}</h4>
+          <div style="display:flex;gap:6px;flex-shrink:0;">
+            <span class="chapter-badge">${note.tag}</span>
+            <span style="padding:3px 10px;background:${typeColor}18;color:${typeColor};border-radius:999px;font-size:11px;font-weight:700;">${typeLabel}</span>
+          </div>
+        </div>
+        <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;font-family:${note.type === 'formula' ? "'Courier New', monospace" : 'inherit'};">${formattedContent}</div>
+      </div>`;
+    }
+
+    init();
+  </script>
+</body>
+</html>
