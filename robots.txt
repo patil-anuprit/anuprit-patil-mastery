@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://anuprit-patil-mastery.netlify.app/sitemap.xml
