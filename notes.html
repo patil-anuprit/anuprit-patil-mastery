@@ -394,47 +394,147 @@
           }
         ]
       },
-      it: {
-        name: 'Information Technology',
-        icon: '💻',
-        color: '#8b5cf6',
-        sections: [
-          {
-            title: '🖥️ IT Tools and Business Systems',
-            notes: [
-              { title: 'Communication Life Cycle', type: 'definition', content: 'Idea → Encoding → Transmission (through channel) → Decoding → Feedback\nTypes: Verbal (spoken), Non-verbal (gestures, body language), Written (email, letter), Visual (graphs, charts)', tag: 'Unit 1' },
-              { title: 'Types of Networks', type: 'definition', content: 'LAN (Local Area Network): Small area, e.g. office, school\nMAN (Metropolitan Area Network): City-wide\nWAN (Wide Area Network): Countries, e.g. Internet\nPAN (Personal Area Network): Bluetooth devices within 10m', tag: 'Unit 1' },
-              { title: 'Network Topologies', type: 'definition', content: 'Bus: All devices on one cable | Star: All connected to central hub | Ring: Circular chain | Mesh: Every device connected to every other | Tree: Hierarchical combination of star and bus', tag: 'Unit 1' },
-              { title: 'Internet Services', type: 'definition', content: 'WWW: Web pages accessed via browser\nEmail: Electronic mail using SMTP/POP3\nFTP: File Transfer Protocol\nVoIP: Voice over Internet Protocol\nE-commerce: Online buying/selling\nCloud Computing: Services via internet (AWS, Google Cloud)', tag: 'Unit 1' },
-            ]
-          },
-          {
-            title: '🗄️ Database Management',
-            notes: [
-              { title: 'Database Concepts', type: 'definition', content: 'Database: Organized collection of related data\nDBMS: Software to manage databases (e.g. MySQL, MS Access)\nTable: Data stored in rows (records) and columns (fields)\nPrimary Key: Unique identifier for each record (no duplicates, no null)', tag: 'Unit 2' },
-              { title: 'SQL Basics', type: 'formula', content: 'SELECT column FROM table WHERE condition;\nINSERT INTO table VALUES (val1, val2);\nUPDATE table SET col=val WHERE cond;\nDELETE FROM table WHERE condition;\nCREATE TABLE name (col1 type, col2 type);', tag: 'Unit 2' },
-              { title: 'Data Types in SQL', type: 'definition', content: 'INT: whole numbers | FLOAT: decimal numbers | VARCHAR(n): variable-length text | CHAR(n): fixed-length text | DATE: date values | BOOLEAN: true/false', tag: 'Unit 2' },
-              { title: 'Constraints', type: 'definition', content: 'PRIMARY KEY: unique, not null\nFOREIGN KEY: links to primary key of another table\nNOT NULL: field cannot be empty\nUNIQUE: no duplicate values\nDEFAULT: auto-fills value if not provided\nCHECK: validates condition', tag: 'Unit 2' },
-            ]
-          },
-          {
-            title: '🌐 Web Technologies',
-            notes: [
-              { title: 'HTML Basics', type: 'formula', content: '<!DOCTYPE html> — declares document type\n<html> → <head> (metadata) + <body> (content)\nCommon tags: <h1>-<h6>, <p>, <a href>, <img src>, <ul>/<ol>/<li>, <table>, <form>, <input>', tag: 'Unit 3' },
-              { title: 'CSS Selectors', type: 'formula', content: 'Element: p { color: red; }\nClass: .myclass { }\nID: #myid { }\nDescendant: div p { }\nPseudo: a:hover { }\nBox model: content → padding → border → margin', tag: 'Unit 3' },
-              { title: 'JavaScript Basics', type: 'formula', content: 'var/let/const — declare variables\nif/else, switch — conditions\nfor, while, do-while — loops\nfunction name() { } — define functions\ndocument.getElementById() — DOM access\nalert(), console.log() — output', tag: 'Unit 3' },
-            ]
-          },
-          {
-            title: '🔒 Cyber Safety',
-            notes: [
-              { title: 'Common Cyber Threats', type: 'definition', content: 'Virus: Self-replicating malicious program\nWorm: Spreads through network without user action\nTrojan: Disguised as legitimate software\nSpyware: Monitors user activity secretly\nRansomware: Encrypts files and demands payment\nPhishing: Fake websites/emails to steal credentials', tag: 'Unit 4' },
-              { title: 'Safe Internet Practices', type: 'definition', content: '• Use strong passwords (8+ chars, mix of cases, numbers, symbols)\n• Enable 2-Factor Authentication\n• Don\'t share personal info publicly\n• Check for HTTPS before entering info\n• Regular backups\n• Keep software updated\n• Avoid pirated software and unknown links', tag: 'Unit 4' },
-              { title: 'IT Act 2000', type: 'definition', content: 'India\'s first law for e-commerce and cybercrime. Key provisions: Legal recognition of electronic records and digital signatures. Sections: 43 (unauthorized access), 66 (hacking), 67 (obscene content), 72 (breach of confidentiality), 79 (intermediary liability).', tag: 'Unit 4' },
-            ]
-          }
-        ]
-      }
+    it: {
+  name: 'Information Technology (CBSE 417)',
+  icon: '💻',
+  color: '#8b5cf6',
+  sections: [
+
+    {
+      title: '📢 Communication Skills-II',
+      notes: [
+
+        {
+          title: '🌟 Communication',
+          type: 'definition',
+          content: 'Communication is the process of exchanging information, ideas, thoughts, feelings and messages between two or more people for mutual understanding.',
+          tag: 'Part A'
+        },
+
+        {
+          title: '🎯 Objectives of Communication',
+          type: 'definition',
+          content: 'To inform, educate, motivate, influence, persuade, build relationships and ensure effective understanding.',
+          tag: 'Part A'
+        },
+
+        {
+          title: '🔄 Communication Cycle',
+          type: 'definition',
+          content: 'Sender → Idea → Encoding → Message → Channel → Receiver → Decoding → Feedback',
+          tag: 'Part A'
+        },
+
+        {
+          title: '🗣 Verbal Communication',
+          type: 'definition',
+          content: 'Communication using spoken or written words. Examples: conversation, speech, email, report, letter.',
+          tag: 'Part A'
+        },
+
+        {
+          title: '😊 Non-Verbal Communication',
+          type: 'definition',
+          content: 'Communication through facial expressions, gestures, posture, eye contact, body language and appearance.',
+          tag: 'Part A'
+        },
+
+        {
+          title: '📄 Written Communication',
+          type: 'definition',
+          content: 'Communication through written words such as notices, reports, letters, emails and messages.',
+          tag: 'Part A'
+        },
+
+        {
+          title: '📊 Visual Communication',
+          type: 'definition',
+          content: 'Communication using charts, graphs, symbols, signs, posters and presentations.',
+          tag: 'Part A'
+        },
+
+        {
+          title: '🏆 7 Cs of Communication',
+          type: 'definition',
+          content: 'Clear, Concise, Concrete, Correct, Coherent, Complete and Courteous.',
+          tag: 'Part A'
+        },
+
+        {
+          title: '🚧 Barriers to Communication',
+          type: 'definition',
+          content: 'Physical Barriers, Linguistic Barriers, Emotional Barriers, Cultural Barriers and Organisational Barriers.',
+          tag: 'Part A'
+        },
+
+        {
+          title: '💡 Overcoming Communication Barriers',
+          type: 'definition',
+          content: 'Use simple language, listen carefully, ask questions, provide feedback, maintain eye contact and avoid distractions.',
+          tag: 'Part A'
+        },
+
+        {
+          title: '👂 Active Listening',
+          type: 'definition',
+          content: 'Active listening means giving complete attention to the speaker, understanding the message and responding appropriately.',
+          tag: 'Part A'
+        },
+
+        {
+          title: '📚 Importance of Active Listening',
+          type: 'definition',
+          content: 'Improves understanding, reduces misunderstandings, builds trust and improves relationships.',
+          tag: 'Part A'
+        },
+
+        {
+          title: '🤝 Feedback',
+          type: 'definition',
+          content: 'Feedback is the response given by the receiver to indicate whether the message has been understood correctly.',
+          tag: 'Part A'
+        },
+
+        {
+          title: '⚡ Types of Feedback',
+          type: 'definition',
+          content: 'Positive Feedback, Negative Feedback, Constructive Feedback and Instant Feedback.',
+          tag: 'Part A'
+        },
+
+        {
+          title: '🌍 Communication in Workplace',
+          type: 'definition',
+          content: 'Good communication increases productivity, teamwork, professionalism and customer satisfaction.',
+          tag: 'Part A'
+        },
+
+        {
+          title: '🎤 Public Speaking Tips',
+          type: 'definition',
+          content: 'Maintain eye contact, speak clearly, use correct posture, avoid fillers, know your topic and practise regularly.',
+          tag: 'Part A'
+        },
+
+        {
+          title: '📝 Important Exam Questions',
+          type: 'definition',
+          content: 'Define communication. Explain communication cycle. What are barriers to communication? Explain 7 Cs of communication. Define active listening.',
+          tag: 'Part A'
+        },
+
+        {
+          title: '🔥 Board Revision Capsule',
+          type: 'definition',
+          content: 'Communication = Exchange of Information. Remember Communication Cycle, 7 Cs, Active Listening and Communication Barriers.',
+          tag: 'Part A'
+        }
+
+      ]
+    }
+
+  ]
+}
     };
 
     const STUDY_TIPS = [
